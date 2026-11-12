@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ICC Weight Room</title>
+<meta name="theme-color" content="#0D233F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Weight Room">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+<script>if (!window.supabase) document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"><\/script>');</script>
+<script>
+/* Supabase project (the publishable key is meant to be public; security is enforced by the database rules) */
+const SUPABASE_URL = "https://bmqbpdflcfzhcnwusmlo.supabase.co";
+const SUPABASE_KEY = "sb_publishable_yxI600Ad15FXHOok-B_5oA_OcvTmHhO";
+const RECOVERY = /type=recovery/.test(location.hash + location.search);
+</script>
+<style>
+:root{
+  --bg:#E8ECF2; --surface:#FFFFFF; --surface2:#F1F4F8; --ink:#0D1B2E; --muted:#56637A; --line:#D3DAE4;
+  --navy:#0D233F; --navy2:#16345C; --red:#D10A0A; --red-soft:#FBE6E6;
+  --good:#1F8A4C; --good-soft:#E3F3EA; --bad:#C0283C; --gold:#C99A1E;
+  --display:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
+  --body:"Barlow","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#08121F; --surface:#112038; --surface2:#182B47; --ink:#EEF2F8; --muted:#9FB0C8; --line:#24395A; --navy:#17375F; --navy2:#2A5288;
+    --red:#F2443A; --red-soft:#3A1620; --good:#3FBF74; --good-soft:#123222; --bad:#F0566A; --gold:#E2B640; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#08121F; --surface:#112038; --surface2:#182B47; --ink:#EEF2F8; --muted:#9FB0C8; --line:#24395A; --navy:#17375F; --navy2:#2A5288;
+  --red:#F2443A; --red-soft:#3A1620; --good:#3FBF74; --good-soft:#123222; --bad:#F0566A; --gold:#E2B640; color-scheme:dark;
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+a{color:inherit}
+[hidden]{display:none!important}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--navy);color:#fff}
+.top-in{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 16px}
+.mark{width:40px;height:42px;object-fit:contain;flex:none;filter:drop-shadow(0 0 1px rgba(255,255,255,.55))}
+.brand{font:700 24px/1 var(--display);letter-spacing:.01em;text-decoration:none;color:#fff;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.brand small{display:block;font:500 13px/1.2 var(--body);opacity:.85;letter-spacing:0}
+.brand .bs{display:none}
+.iconbtn{width:40px;height:40px;border-radius:10px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;display:grid;place-items:center}
+.hbtns{display:flex;gap:8px;flex:none}
+@media(max-width:460px){.brand .bl{display:none}.brand .bs{display:inline}.brand{font-size:22px}.brand small{display:none}.hbtns{gap:6px}.hbtns .iconbtn{width:38px;height:38px}}
+.seam{height:7px;background:
+  repeating-linear-gradient(115deg,transparent 0 6px,#E10700 6px 8px,transparent 8px 14px) top/100% 3.5px no-repeat,
+  repeating-linear-gradient(65deg,transparent 0 6px,#E10700 6px 8px,transparent 8px 14px) bottom/100% 3.5px no-repeat,
+  var(--navy)}
+nav.tabs{max-width:980px;margin:0 auto;display:flex;gap:4px;padding:0 10px 8px;overflow-x:auto;scrollbar-width:none}
+nav.tabs a{flex:none;padding:7px 10px;border-radius:999px;text-decoration:none;font:600 15px/1 var(--display);letter-spacing:.02em;color:rgba(255,255,255,.85)}
+nav.tabs a[aria-current="page"]{background:var(--red);color:#fff}
+
+main{max-width:980px;margin:0 auto;padding:16px 14px 80px}
+.banner{background:var(--red-soft);border:1px solid var(--red);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:14px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.05}
+h1{font-size:34px;font-weight:800}
+h2{font-size:24px;font-weight:700}
+h3{font-size:19px;font-weight:700}
+.sub{color:var(--muted);font-size:14px}
+.section{margin-top:26px}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.section-head a,.linkbtn{font-size:14px;font-weight:600;color:var(--red);text-decoration:none;border:0;background:none;padding:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:760px){.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0;text-align:left;color:inherit}
+.tile .lbl{font-size:13px;color:var(--muted)}
+.tile .val{font:700 30px/1.05 var(--display);margin-top:2px;font-variant-numeric:tabular-nums}
+.tile .who{font-size:14px;font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button.tile{width:100%;cursor:pointer}
+
+.hero{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--navy);border-radius:16px;padding:18px}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:2px dashed color-mix(in srgb,var(--red) 45%,transparent);pointer-events:none}
+.hero .date{font:800 30px/1 var(--display)}
+.hero ul{margin:12px 0 0;padding:0;list-style:none}
+.hero li{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line)}
+.kind{font:700 12px/1 var(--display);letter-spacing:.04em;padding:4px 7px;border-radius:5px;background:var(--navy);color:#fff;flex:none}
+.kind.c{background:var(--red)}
+.prog{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-top:14px}
+.prog i{display:block;height:100%;background:var(--good);border-radius:99px;transition:width .3s}
+.hero .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;position:relative;z-index:1}
+
+.navrow{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;text-decoration:none;color:inherit;margin-bottom:8px}
+.navrow .ic{width:40px;height:40px;border-radius:10px;background:var(--navy);color:#fff;display:grid;place-items:center;flex:none}
+.navrow b{font:700 20px/1.1 var(--display);display:block}
+.navrow span{font-size:14px;color:var(--muted)}
+.navrow .chev{margin-left:auto;color:var(--muted)}
+
+.seg{display:flex;background:var(--surface2);border-radius:10px;padding:4px;gap:4px;margin-bottom:12px;overflow-x:auto}
+.seg button{flex:1;border:0;background:transparent;padding:9px 10px;border-radius:8px;font:700 17px/1 var(--display);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.search{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);margin-bottom:12px}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+th{font:600 13px/1 var(--body);color:var(--muted);text-align:right;padding:11px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+td{padding:10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tbody tr.go{cursor:pointer}
+tbody tr.go:hover td{background:var(--surface2)}
+.heat{display:flex;gap:2px;flex-wrap:nowrap}
+.heat i{display:block;width:10px;height:16px;border-radius:2px;background:var(--line)}
+.heat i.f{background:var(--good)}.heat i.p{background:var(--gold)}.heat i.m{background:var(--bad)}
+.st{font-weight:700}.st.ok{color:var(--good)}.st.part{color:var(--gold)}.st.miss{color:var(--bad)}.st.none{color:var(--muted);font-weight:500}
+.pct{display:inline-block;min-width:44px;font:800 18px/1 var(--display)}
+.logday{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+.logday table{margin-top:8px;font-size:14px}
+.logday td{padding:6px 4px;white-space:normal;text-align:left}
+.logday td.r{text-align:right;white-space:nowrap}
+.legendrow{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:8px}
+.legendrow i{display:inline-block;width:10px;height:12px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.jn{display:inline-block;min-width:26px;text-align:center;font:700 13px/20px var(--display);background:var(--navy);color:#fff;border-radius:5px;margin-right:8px}
+.pname{font-weight:600}
+.rk{font:700 18px/1 var(--display);color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:26px 10px}
+
+.back{display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:var(--red);font-weight:600;padding:4px 0;margin-bottom:8px}
+.phead{display:flex;align-items:center;gap:4px}
+.bigno{font:800 54px/1 var(--display);color:var(--red);margin-right:12px}
+.statline{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+.statline div b{display:block;font:800 30px/1 var(--display);font-variant-numeric:tabular-nums}
+.statline div span{font-size:13px;color:var(--muted)}
+.ptabs{display:flex;gap:18px;border-bottom:1px solid var(--line);margin:22px 0 14px;overflow-x:auto}
+.ptabs button{border:0;background:none;padding:10px 0;font:700 17px/1 var(--display);color:var(--muted);border-bottom:3px solid transparent;flex:none}
+.ptabs button[aria-pressed="true"]{color:var(--ink);border-color:var(--red)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select.inp,input.inp,textarea.inp{padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);min-width:0}
+textarea.inp{width:100%;resize:vertical}
+.btn{border:0;border-radius:10px;padding:10px 16px;font-weight:600;background:var(--red);color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.navy{background:var(--navy)}
+.btn.ghost{background:var(--surface2);color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:6px 11px;font-size:14px;border-radius:8px}
+.btn[disabled]{opacity:.5;cursor:default}
+label.f{display:block;font-size:13px;color:var(--muted);font-weight:600;margin:12px 0 5px}
+
+/* Max cards */
+.maxes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.maxc{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.maxc .mh{background:var(--navy);color:#fff;font:700 15px/1 var(--display);letter-spacing:.03em;padding:8px 12px}
+.maxc .mb{padding:10px 12px}
+.maxc input{width:100%;font:800 30px/1 var(--display);border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--surface2)}
+.maxc .mv{font:800 34px/1 var(--display)}
+.maxc .sub{margin-top:6px;font-size:12px}
+
+/* Calendar */
+.calhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.calhead .row{flex-wrap:nowrap}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal .dow{font:600 12px/1 var(--body);color:var(--muted);text-align:center;padding:6px 0}
+.cday{min-height:74px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px;text-align:left;display:flex;flex-direction:column;gap:3px;color:inherit;min-width:0}
+.cday.out{opacity:.45}
+.cday .n{font:700 17px/1 var(--display)}
+.cday.today .n{background:var(--red);color:#fff;border-radius:6px;padding:2px 5px;align-self:flex-start}
+.cday[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 2px var(--navy)}
+.cday .ch{font:600 11px/1.15 var(--body);padding:2px 4px;border-radius:4px;background:var(--navy);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cday .ch.c{background:var(--red)}
+.cday .ok{font:700 11px/1 var(--body);color:var(--good);margin-top:auto}
+.cday .ch .sm{display:none}
+@media(max-width:560px){.cday{min-height:62px;padding:4px 3px}.cday .ch{font:700 10px/1.25 var(--body);padding:3px 3px;background:var(--red);text-align:center;border-radius:4px}.cday .ch.c{background:var(--navy)}.kind.calk{background:var(--red)}.kind.c.calk{background:var(--navy)}.cday .ch .lg{display:none}.cday .ch .sm{display:inline}.cday .ok{font-size:10px}}
+
+/* Workout sheet */
+.wk{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-top:14px;overflow:hidden}
+.wk-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:var(--navy);color:#fff}
+.wk-h.c{background:var(--red)}
+.wk-h h3{color:#fff}
+.wk-h .sub{color:rgba(255,255,255,.8)}
+.wk-h .btn.ghost{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)}
+.wk-notes{padding:10px 14px 0;font-size:14px;color:var(--muted);white-space:pre-wrap}
+.ex{padding:12px 14px;border-top:1px solid var(--line)}
+.ex:first-of-type{border-top:0}
+.ex-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.ex-h b{font:700 20px/1.1 var(--display);display:block}
+.done{flex:none;display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px 7px 10px;font-weight:600;font-size:14px}
+.done .bx{width:20px;height:20px;border-radius:50%;border:2px solid var(--muted);display:grid;place-items:center}
+.done small.dt{display:block;font-weight:500;font-size:11px;line-height:1.1;opacity:.9}
+.done{flex-wrap:wrap;text-align:left}
+.done[aria-pressed="true"]{background:var(--good);border-color:var(--good);color:#fff}
+.done[aria-pressed="true"] .bx{border-color:#fff;background:#fff;color:var(--good)}
+.ex.isdone{background:var(--good-soft)}
+table.sets{margin-top:8px;font-size:15px}
+table.sets th,table.sets td{padding:7px 6px;text-align:center}
+table.sets th:first-child,table.sets td:first-child{text-align:left}
+table.sets td.snote{font-weight:600;color:var(--muted);font-size:13px}
+.blk{display:inline-block;min-width:22px;text-align:center;font:700 13px/20px var(--display);background:var(--red);color:#fff;border-radius:5px;margin-right:8px;vertical-align:2px}
+.gtag{display:inline-block;font:700 11px/18px var(--body);letter-spacing:.03em;text-transform:uppercase;padding:0 7px;border-radius:99px;background:var(--surface2);border:1px solid var(--line);color:var(--muted);margin-left:8px;vertical-align:2px}
+.pday .blk{min-width:18px;line-height:17px;font-size:12px;margin-right:6px}
+table.sets td.tg{font:800 22px/1 var(--display)}
+table.sets td.tg.txt{font:700 15px/1.2 var(--body)}
+table.sets td.tg.na{font:600 13px/1.2 var(--body);color:var(--red)}
+table.sets input{width:84px;padding:7px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);text-align:center;font-weight:600}
+.exnote{font-size:14px;color:var(--muted);margin-top:6px;white-space:pre-wrap}
+.cond-in{margin-top:8px;width:100%}
+.who{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 2px}
+
+/* Team status */
+.bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden;width:110px;display:inline-block;vertical-align:middle;margin-left:8px}
+.bar i{display:block;height:100%;background:var(--good)}
+
+/* Sheets */
+.sheet-bg{position:fixed;inset:0;z-index:30;background:rgba(8,18,31,.55);display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:640px){.sheet-bg{align-items:center}}
+.sheet{background:var(--bg);color:var(--ink);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:0 0 calc(18px + env(safe-area-inset-bottom,0px))}
+@media(min-width:640px){.sheet{border-radius:18px}}
+.sheet-h{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:var(--navy);color:#fff;border-bottom:4px solid #E10700}
+.sheet-h h2{color:#fff}
+.sheet-h button{border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:9px;width:36px;height:36px;font-size:20px;line-height:1}
+.sheet-b{padding:16px}
+.plist{list-style:none;margin:0;padding:0}
+.plist li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.plist li:last-child{border-bottom:0}
+.plist button.pick{flex:1;text-align:left;border:0;background:none;padding:4px 0;font-weight:600}
+.edex{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px}
+.edex .row > input.nm{flex:2 1 160px}
+.edex .row > input.sc{flex:2 1 150px}
+.edex .row > select{flex:1 1 110px}
+.edex .pv{font-size:13px;color:var(--muted);margin-top:6px}
+.x{border:0;background:none;color:var(--muted);font-size:22px;line-height:1;padding:2px 6px}
+.dropzone{display:block;border:2px dashed var(--line);border-radius:14px;padding:26px 16px;text-align:center;background:var(--surface);cursor:pointer}
+.dropzone b{font:700 22px/1.1 var(--display);display:block}
+.dropzone.over{border-color:var(--red);background:var(--red-soft)}
+.pday{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+.pday .row{justify-content:space-between}
+.pday ul{margin:8px 0 0;padding-left:18px;font-size:14px}
+.pday li{margin:3px 0}
+.warn{color:var(--red);font-weight:600}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;z-index:40;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:90vw}
+.chart{width:100%;height:auto;display:block}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <img class="mark" src="" data-logo alt="Itawamba Indians logo">
+    <a class="brand" href="#home"><span class="bl">Itawamba Weight Room</span><span class="bs">ICC Weight Room</span><small>Indian Baseball · strength &amp; conditioning</small></a>
+    <div class="hbtns">
+      <button class="iconbtn" id="meBtn" aria-label="My profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 20.5c.7-4 3.8-6.2 7.5-6.2s6.8 2.2 7.5 6.2"/></svg></button>
+      <button class="iconbtn" id="setBtn" aria-label="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+  <div class="seam" aria-hidden="true"></div>
+</header>
+<main id="app"><p class="empty">Loading…</p></main>
+<div id="modal"></div>
+<script>
+const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANAAAADcCAYAAAABZi8PAAB3NklEQVR42u2dd5gkVfX+P/dWVeeePLM7efOyu+QoQZGogAQVBETJogQVFQk/vwoiSg6iIoqiSFJQkagSJEpYcti8Ozs7s2F2cujpVOH+/qjqCTvdPbOw7jYw93n6mZnunq6uqvvec857z3kPTI7JMTkmx+SYHJNjckyOD9kQk5dg6w2llAAMQAc076cApPcQWe6JAhzv58hHZlje62zyfN7XhBD25B2ZBFChAKMIKAIiQCkwFagAKoFyoAyIeq8XASEg4P2UHpAyDznivijA9oBge2CwNwFRHDCzAEsBg95rbAIi5f1fGlgLxLznBrxjZY6b+WxnBIgTQHLEc5n3jfyOjvfZm4Lf3OT7OyNAPvJ91sj3CSGsSQB9+EEyBagHaoHGEY8pI0BS6jjKF4snGIwnGIwniSeSxAYT9PUP0NsXo68/Rn8sRmzQfU8imSKZTJE2TSzLxrYdlDfPhRDomoah6+i6hmHoGLr70HTNfc1wX9N1DV3T0aRE0ySalnlOQ2oSTUqkdH8K72ckHKSuZgp+vw9NCIQU7ns0zXu/QErh/q5JNKm5zwkx9JmapiGE95wcNZ3SI4CRAUd6BEAzz6cm8D5zBNDsEQBPjACb6QE724KTAbiVZyHIWGoT6B/xvsyCkwSahBCtkwAaHyxlwDxge2AXYGegzrLsSiWEr72jm/UbO9nY0cX6DR2sXd/OurZ21m/spLunj9hgnHgyRSKRJJFMkUqncWy19a+6yrNseq8F/D58hoHwgCKEGAKb9AA1/HPE78IFqpQCISS65gFXakPgHgl6Tdc88Gvouo4+4ndD19C9941aFDQdw8gsIKMXCl3X3EVixGIxdHxNDh1f07ThBUUbfk0b+bs+/JqU7rkIkTk393KZlo2UYrUm5aFCiJWZS6lPwmXIuuwB7AvsCOyUSKYqB+Mp37JVa3hvyUqWrGhmedMamlvW09cfI55MkkiksGwbIcTQKixGPVwr4jMMN/IpqJN2fzgK4um0iyuVeVq5GFNZkKgyP1SOl1S2t496Xo2++NmxrkYcY1P8b3J9pXCBL+ToeyC95za9N1Ju+h7p/Q5CSqQQHsBcgCpg7swG7vjFj6eHgv7ZwMcbQEopA5gLHAgcAuyRSKambGjvZuGbi3jx1bd5d/FKVjS10DcQI5U2UY6D9FybzE0xfAa+gkPGxMGjAJ9QBJTj+jBCuA8ENsLzYYTrRwnXdKkPYPg2NcBqk+fEODGGyALQkcBVyl0QXFCqUScqskM6O3K9jxDeQpFKpZlSWUYo6E95MSMfOwAppfzA7sDRwEHA/A3t3YHX317Cv59+iYVvvsfK5rXEYnEcpYbMuxCCgN/3kbwmppAcEm/ngv7VpAFbCBQuiNwAwgWT5YHLFtILJEb8LiS2EFgITO9/TQSWENhILO9v2/vbFAz/DlhC4CCxEFgC73eGgSyGwWx7f7sAZ+h3R3jfceh37/nM5wvhBU3u75mFQGVlV4ahJr1nbdthu1nTADqAdR8bAHmWZnvgKOAYy7IXrFm30XjquYU89tR/efPdpWzs6MZRDpp0fWb/RxAsSils28G2bRyl8BsGUkocYJqVYG46TkqMtQBiCzNPYgJWS4nRdJztTWpHuABRjPgphv92XLpuyGo6Q/8vUMJ9ziYDyswi4IHcA29mUbCFJI3kuuIZrNUCACyYOxOg2WMqP9oAUkrVAscAJwC7t27oCDz6xAs8+M9neOPdpfT09rsMl67j8xkf4QUE0qaJrmlMq69m++1mMr2hhgcee4Z1bR0oTaPcSeMIsAqMThJDVsCFl6ayOJBqAkBX44N40+c0YKOmo5iBAqQQbDd7Gh4LZ34kAeRZm72BE4Gj+wYGq594diF/+cfjvLDwLbp6+ty4RdcIBPxbjOByNlkd892obD6/RCHUsLuwpeaxZbv7pIfuvxdfO+kY9ttrZ8pKi0gkUjz57EIcx0HXFGVOekJxzTYK0zYrttpS5tJQsE4L0qH5EI5DUVGE2upKgOWbvlf/CACn2ItrzgT2fW/ZannX/Y/x4L+fpWnNOlAKw9A/UByTcRNsLzaQgE85+JVDqWNR4aQptk2iyiLiWIS81/QMmwWYCFJCkhAacakxKDQGpEa/NOiVBv1CxxQCU7guhUShoZAjwDXh2Ma0KC8r5oqLz+YrXzwMXdeGXuvp66ezuw8hJYb3/RWTY+SQwDrdT0JoSGVSXlpMVUUpwJKPDICUUo3AV4AvJ1Pm/CeefYXf3/Mgz7/yJv0DgxiGjv99umdqRMCqgJCyKXdMplkJZpmDzLDiTDPj1NpJSmyTkLIJKAef2mTBG7kNp0ZTxxaQEu4uYlLCgGawQQ+yzgjSYoRZ7QuzSg/RofnolzoO4FNqXDBZlsXUqgru+tWP2XfPnca83j8wyMDgIEJIfMqh1EkP7SBOjuHRpIfdhdNxmFpZTnE0bAOrPvQAUkpNA74GnNo7MFjz5wce5w/3PsS7S1Zg2Q4+wyD4Plw0x2OUHCCgHBrsBPPSg+yS7mO+GWOmOUipbRJQCo3hbW73IoOy3K3qUd6DDsJvgN+P8PsRfh/C50cEAuh+Pz6/nyK/H2FZEIuxID6IiA3gDKwnOZAijqRVD7LUCPO6v4Sng+V0SsOLC7Kcg+MQCPi55aoLs4IHoL2zB8u0UELgdxzKbNOjqCfHyLFaD7prnqOYM7MBoBvo+tACSCk1CzgbOKmto2fK7+9+kD/d/wirW9ajSentUuubCRqBKdzZU+xYbJfuZ+9kD3ulepljDlLmmOjKywcRwwle2KC8VExhgFZdhd44HX3GTPRZs9Hr65GVVcjSMmRRESIUQvh8YBiQTuP09eL09uL09GC3bcBetw5rTTNWczO2Wo+TSIFIEbZtFqRj7JiOcVJsI2dXzOOB8FT8KrvNSKctzjn1OA47aJ+c59ze0Y3lOKDphJRNVE26cJuGTAkhWKcHkIDlOBkCoc0D0YcLQEqpGcBZwNfWbugou/WOv3HX3/7Jug3t7yu2Ubj7HwoodUx2TvWzf7KbvZPdTDcTBJXyrJGXPCVcU6O8dE3hA62hFt9uu+Pf8xP4P7E3+qzZaNU1o49j29gta7BWLMdcuQJr2VLM5cuw163F6enG7u1FDZrDbp7HKggJQoAUwynaEohL2KgFcsbEtm1TW13JeWccl/f8N3Z2Y9sOUoMyx8SnJh24TeOfHqnTpgWQSqHrOrNnNAI0CyHiHxoAeek15wBf39DePeVXt9/PnX99lPVtHfgMfbPdNNuzNmFls2Oqj0MTnXw62cUMcxC/F5NYFiScTWgyB2TYh7HTPIIHHoz/wIPw774nsrx8+LuaJtbqJtJvvkH6rTcx330Hc+li7PYO1MCAC74Rd0h4qBC+4UNpahgsKQE90mCj5melEWK1HmK1EWKZL4yustsL07I44uB9aaidmh9AHd3Ytg1CUG6n0ZWatEAjb4+CHs1Hh3QZuEg4yLSGaoDF2d6vFyBwioCvAuf39A/OuvUP93PbXf+gdcPGzQaOGhHX1FlJDk50cXhiIzum+wk7aihtN5F24xV9zgwCBx6M/xN7M3jPXdhtbYSOOobA4Z/Dt+tuCGOYlLCaVpFa+Aqp554h/eYbmMuXovoHUdYIoGieVfGPdRM05T4A4lLQogdYboR521fEMiNMsxFio+YnhcQUElD4lZOTRNA0jSMO3m/ca9LR2YPwyJFyx8RQYE7GQKMsUIsWICUkyrGJhkOZRanwAaSUOhq4NJW2dvnjnx/mptvuZeXqVoz3AZy0cGnanVP9fD7exiGJTmqslOfCQVJkXDI/0ZO/TOj4E/HttjuytBSA0AkngVJu7AKowUFSr7xE8j9PkXz6Scz3FmF39g0hQniVPMKf+8bonpVJClhjBFlsRHjVX8Lb/iLW6EF6pDHEiGnKo7FRBFT+2jfbcagqL2X+3BnjXV86ujIAEpQ7aXRGFwxNxkDQbISwhADHobamiqDfsBmRQFpwAFJK7QFcYtv20Y8++aK88uY/8sY7S9A0bbOA4yBIe27a/olOTohtYO9UN1HHwRSua7SJX4cTS2F3d2HsuOMQeMDN8rW7Okm9/BLJf/+L1HPPYK5ehfJ8PGHkBsumoBFAn9RY6o/wir+El/ylrDDCdGoGDgLpAcZ4n/GI4zhMqSyjsrwk7/tM06KjqxcpJQpFuZ2eREyWxbdZC2IDwnGYPb0ew9C72SSJtCAApJQqB74HnPv24pVFV1z/Ox77z4vYtr1ZOWkZi1PkWHwu3sWJg+vYNdWHT42wNiOH5bJoWk0FoWO+SOhLJyCLikZPtpXL6T7vbFLPPOcybjJDS4+/ghkeaLo0nXd8RTwXKONlfymrjSCDQhsBmE1TGt/ndXQUkXCIUDCQ932ptElnd69b86MUFY45uQe0yb1LCsFaPYjmMXCzZjQAtAMbCgZAnjbAicAPe/sHt7v6F3/kd3f/g76BQfw+A00zNgs4EWXzucE2TomtZcf0ANIDTjaLoyzQG2uInH4G4ZNPR582LYf50DDmziP1wnNDsUy+C68rN4eqX2os9BfxRKiCF/ylrNGDpIREQ6Ert3Qg3/k4QxnHw6k+w3GTypkiJMT4gcxAbJD+gZhbPIeiwk5PEgib3Me4kLToLgNn6DqzXQCt2jQHbpsBSCm1HXC5bTvH3ffwU/z0xt+zbNUa/D5jwpR0BjgB5fC5eDunD7SyS7ofkQmIs8hyqDRoVWVEvvZ1oueci1ZT667Kry4k9ttb0WpqCB93POaKZQzeew/JZ55GdfW6hXA55qbmASctYJEvwhPBCp4KVrDMiJASAh2Flgc0mRocy3Pj/Mqh0klRbyVotJJMs+LUWwkijk1E2dxcNI3nA2VjqGchBPF4glQqnddyd3b1kkqbCNzvVu5MAmhTBq5L99MjDYRSGD6DuS6FvTTX/+hbETh+4Fzg4qUrWyr/78pbePSpFwA2K84xhUAA+yZ7+PpAC/smu4cmsUspezSxl/6l0iAMQfjEYyn+fz/E2H4HANJvvsHATdcTf+DvOANuDkHsVz/H6Y+5n2GQs4pUV+6Fa9d0ng+U83B4Cq/5iumV+ghLo3LS6RkLE3VsaqwEO6QH2CHVz4JkL/UqTbGyCDvDeXQaEFBwdzj7hNc0SVt7F+2dPdTXTsnNwHX1kk6bICDk2EQdCzXJwI1aEFv1AAmhgeMQjUSpr62CLEmkWxVAHknw01TaPOQXv/sLN/zmHjq7evD7fRNyPUYSBHPNQb4+0MIR8XZCjkNauOBRFgifxLdgHk5HB9aGdrDBmD+Xkst/QuiL7gajvW4t/TdcR+yPt+N0D4wiA5z+WFbaeWRsowQs94V5KDSFfwYraTaC2AiMvJZGDAG/0k6zfXqA/ZI97JLuY2ain4gFvpCEugbMjnbsQZOUGLZwy40gd0VqeTZYnnXjU5OSto5u3lq0LC+Aurp7SaXTYPgosVMElD0ZA21C+qzVAySFhrAt6qqn4Dd0h02K6LYagJRSAeA7wCWvvrU0euFPfs5/F769WSUFGXetxLE4a2Adpw20MsU2SWdiHM890+unUnLVNYSOPR67bQPmksXYzc0Ej/482tSpYFvE7vgD/T+9ArOpJTshILMDx6fcY70UKOG+SDVPB8rplsaQi6ZnsQsjMx4qbJPd0r0cnOhiz1QPdekkhumWSYs5MwgceTT6jBnEH3gAq3Wd587BOt3HPeFa7otUs0Hz41NOzjw423G4/+GnOPLQT+W8lu1dPZiWjeETlDhm3njs4zhsYI0WRKFQjkNj3VTC4WAct5Bu6wJIKbUbcHU8kTroulvu4ubf/ZmBwcHNSr2xcPcrDkh08Z2+1eycHsAaw6pJQp//HKVXX4s+e457Ug2N6A2Nw27fsiX0Xnwh8YcecRMM/BNbjQzlbnI+HSzj7kgtr/hLiQuJL4+1yWQ8BJXDbuk+Do+3c0Cii0YrgW6BZYNTHEAecDDRU0/Hv+deJP75GH1XXI7T3ErAgG5N56/hav4UqaVZD+a1bpnhM3T++dSLvP72EnbbaV52AHX2DMVexR6AJmOg4YXSFtCsh9wEFKWYOb0e3ATStVsNQF5h23nAD197e2np9y69kZdeewefz8DvmzhJkBKSWjvFuf1rODa2noBSY1k1C4LHfp7Sa29AmzLVU4IYIR+RShG77VZ6L7sMp6t3wsDxKeiTksdCFdwTruE1fzGml/4/HnAqnTQHxLs5ZrCNXdN9RBwHywbTBlVTQfhLJxA54+voc+eSev5Zus48jcQ/H8cnwPILHghWclu0gXd90bwExJjvLSX9A4Ncdu1vue93V2WNKzd2dHl7QG4eoE9lofg/1hS2ZK0eRCoFQjJvznSAFbi6cv97AHkM2/WmZR9+w613c90td9I/MLhZFaAZ4YfD4x18v28Vs83EUJyT7dsn//kobU8+RegLn6fk6uuQpWUjAJREGD5CxxxD6rmnsZrXkMsHGgaOxgPhKu6O1PCOEcURAsMrkMsHnHorydHxjXxhsI2ZZtzVEnMgYYFWXUHxKacRPfebaHX1JJ98gp4Lzif59FNoafD74FV/Mb8snsbz/lK31GAc4Kgs5KDf7+PxZ1/h8utu48r/Oy8LgLqHYs5KZ3ITddP736756JGGWyWsSeZ7ABJCOP9zACmlvgxcu2xVS835/3c9Tz3/Kj6fvlkboikhqbLTfLt/NcfHNqArlX+FtMEZSBI+6RiK/u/SUeABkEXFRL5+NsaCBaQXLsy6Z5mJcQak5B/hKv4UqeVdowgE6MrJmbxpe8ozjVaCLw1u4AuDbdRaKVciU7lsoKwooejk04h+5zvodfWk/vsCXed8g+S//4lIKwIGtIT8/Laogb+FqolJDZ9yEErlXWBsIdCVgyWEtxk7wpXzGdz0uz/j8xn88LtnDJV4OI5Du5cHh0dmTLpvoynsjZqfXqmDoygpiTK1qjxjgfifAchT8bwKOOMP9z4if3TNrWzs7CYQmDhwHC/g3jfZw//1rmT7dIyUyJ/kqFIgS6OUXv4Toud8E6TM8p4U/TdcR/9VP8WJJVxqeuRk8+jvx0IV/C7awBv+IsC1OLlmV4YNrLFTnBBbz/GD66m10u7GrUeby7CP8EnHU3ThxRjz5mMuepfOSy4k/ve/o+Jp/Aak/IK7I9X8OtpAsx4cKhEfz62tsVOcOLiePVJ9/DFSxxPBilEpQBk54Kt/+SeaWzdwxcVnU187hXgiRV9/bMjDrbRTk6jZZCFdqwVJCInumEytLKcoEoQsZdxbDEBKqX2An3d29+1+0eU3c88D/95sHTVLCHxKcVb/Gs7pX0PEscf1y1XKpafLbvk1gf0PcK3Xyy/Rf/01yOJijO13QG+cxuCdfyT+wCMu42aMPmmhYGGgmF9HG3g+UO59j5FyyNnZwGLH4quxNk6NrWWamRgiNVTa9QOChx9K8Q9+iH+f/bA3rKfne+cPUeaaAT4fvO2PcEPxDJ4NuBZzvDjHEgKp4IuDbZzXv4ZZ6ThSwPz0AKdV7shbvqJRlkgIgWHo3PuPf/PqW4u58LyT2WOn+SSSKaRw8+AqHXPSAm0ymjwCwbZtaqdWEo2Ek2Qp4/7AAPJScc4Ffvr8K28Xfev/XcN7S5sIBCa+r8MQUZDk/3pWckS8AytXrDNiFqu0O0nLfv1b9IZGlG0Tu+UX9P74xzhdvcOTSHfz3YRvOFjIxDlNRoDfRhv5R3gKg8J1m3x53CZTuJkChyY6ObevmV3SA9h4NLqXHmTsMI/iS35A+MSTUOk0AzffSP8NN2CtWYvQ3ThnUEpui9Tx26IGuqXhumsTIFPq7SQX9DVxVGwj0gGzJIpKxKlKW+yYGuB1XzHGJnBwFzI/za3rOeeiq5neUEPfQAwhJUHHpmgSQGOu9SojNPT7XFdIcR3QuUUB5BW6XWNa9sk//+2f+dnNtxNPJAkGN6/cICUke6d6+UnPMrbzhP3UuFGzTvT8b1B65TWIQBC7tYXuC75D/P6/I7RN6Gnl1eNkAmwFManxp2g1v4s2sNbbV8nnNmXctdnmIN/qb+bweAdGhg1UnhtZXkLxN79J9LvfR0ajJB57lL4fX0Zq4WuggfS7x37bF+Wq0pm84C9FV2pckiAT63w20cElvauYmUiQ8uvon9wHsbYV1bSaO6LVPBiemreqVNd1lILVrevRhEQJSdSxiUxmIYxy3walZIPmlXErlSkNacXt1LBlAKSU+gRwa1tH907f/sF1/OOfz2AYuiuevhngEcBpsbVc0ruKqONMjEq1IXLO1yi7/ucgJYlHH6Hne9/FXLZilJUZdVVwd/M1BS8GSripeDqv+EsmRA+bHhP2ldgGvtG/hhorTWpE1gMKQsd8juLLfoJvp52xVq+i55vnMPjne1EpG+F3L66F4A/RGm4unkan9I0LHBjOLD+nr5lTB9biSynM6Q1Ev3IS6aeexFq5mltLG7ixeIaX6pPflggBuqYNyUpHHIvwZBbCKAauWxp0Sh9SORi6xqwZ9QBrxmtEpk8QOAL4FnDpsy+9WXreJVezdOUaAgH/+xIC9CuHuNC4L1zNHDNGnZWkwk4T9NyojCbBqGmhQfy+P2OvXo2sqSZ+7904sXTevR2/gg7N4NaiRu6N1Ay5axOxjgvMGBf1rmL/ZDdKDRfgqTTo0+oo/tFlRE47A4DYb26h74qfYq1dj/C5ltCvYK3u58qSWTwaqkJOwOpkjj3fjHFpzwr2HewlZYNxzJFETj+dgauuxHzxVX5V2chNRdM97bjNG44QbnKqY0+6cCMYuC7NR5dmgONQXBSldmol5MlAmDCAlFKlwA227Zx642/u4Wc//wPxZPJ9SUdlDENSSO4LV3N/uBpDOVQ4JnVWgjnmIDun+9nOjDHdjBNx3BjBEm7ai9PdQ/yRf7mfYwxrCmw6MlbniWA515fMYJER9eKccYJ1L0v51Ng6vtW3mirbzUlTAreGSEH4xC9R8rOr0KdNx1y2lN4LLyD+8KOuGIjfPT+/gucCpfy4dDbLjAh+ZY+70GRcts8PbuSS3pVMTaRJlUQpufxy/J/cn57TT8F6890R4Mm5pZUbnd4oddL4lcofb37MLFCLHiQtBMJRlBRHqZlSAbDoAwFIKbUAuL2zu3/P8y65mr8/9jS+zXTZcoEosxoroF362OD3s9Bfwl3UUuRY1FlJdkv3sXeyh53T/Uy1UxgCTL+bszSe1bm5eBp/Cdd4ZQ/2hFb+BivJRX2r+NxgOw7Du/QqBdqUCkquuILImV93rc7tv6P3hz/AXt8+5EJmrMHvonXcWDyDmBz/2HgUftix+FZfM6f1r0WmFeyxC1Nu+Q0iGqXz6CNRy1Zya2UjNxVPRyq1eeDZ5Fxr7RQhxWZbr5H3L01h6mm/n+uiA6v1EA4CoRzqaqoIBnwWOcq4JwQgpdQhwO/eWrSi4fTzL+fdJSvft8s23klrXlJmZiSEZKkvzCJfhHsiNUyxU+yW6ufgRCefSPUw1Up79O5wX77Myv+qv4hLS+fwji+KXznjlklbXpb0EfEOLuhrYpYZd+OcEayff+/dKbvlt/h23gW7fSO9l1zE4B13uMf1D+8p9WgG15TM4C/haqRizCZnLiZyphXnsp7l7J/oIZUG44hDqfjT3dhr19Jx+GcQTS38vqKOG4s+GHjALcpbaYS4obiB99tl2BSCvVJ97JXsLRgQZTybAbn5xLJPwTI97HoCw61MNuJqwW0+gLysglsf+vfz0XMuuoqOrp737bK9X5MqlcLwepS1Sz8Ph6p4LFhJrZ1i31Q3n4l3sEuqn1LHGkoEvDdSzdUlM+mWxrgkQWZfZ5YZ59z+Zo6Mt6MrRWqEHK8yIfzlL1F28y3I8nJSL71I97lnk37znVHERUDBe74wPyydy6v+kgm5bJnN4wMTXfy4dzmN6SRJE8JfOZ7y39yOufg9Oo79PPqa9dxdXsM1xTOHrs0HGTqKV3wl/Ndf+r4/wxSSq3qWsl+yl0Lp/utTcF94KtcVz3hfWncDQsenHBJKMXdWI7gl3O2bDSAPPLf/5s4H/BdefjNp09qmPXNGWigFrNf83BOu4a+hamZYcfZLdrNXqpdnAuX8NVztaUg740xet2fMV2Lr+VbfaqrtNCkgbYGMBlCJJEid4v/3XYp//FOErhP7/W/pufD7ON39Q1YnIxryaKiSy0pn06b5J+SyZcTjv9Hfwrf7VxOwHJI2FH3rHEpv/AXphS/T8aVj0Vs38I/SKn5SMgsHMS7bllkYHO/zRR4Q6fnShWzb6+4w3EtOSomhu4UbQeUww4q/bwv2v5ony4ww7dLnLZ4KpTZn0VbgOPgMnZnT6sFtZWJvFoCUUnOBW26+7S/+8394vVs7r2k4jjOiH6UYasC6rcG00gixzAhze7QeAEM54/r1FgIfigt6mzijvxVHQNIB5UD07K9T9K3vYHd1oVJJAp8+EBWP03Ph9+j/xS/c4gr/MFHhILiluJ6bi6aRFnLCFHWZbXJJ30qOHWzDtsCSgpIf/4jiH15G6sX/0nn8cWhrN/BMcRmXls4hjZwQeEwvq6PMSTMgdWJCG6pZmujdsh2HupopzJ3ViEC4PoBSdHT1smhZkwcgmzorUTA0uPDi1XVawD1f71pJTWwGiASOo4hEgsyaXjchAiGbBZrpKIpTpsl3vnESlm0Ti8Xp6Rugs7uH3t4BYvEEA7FBBgbj2LYz1KxV89qeb04mwge9aHqOYrZ8rkexY/LjnhUcM7iRtADHBBH0U/aTK4h+54JRF8VqaaH73K+TeORfo1w2Q8GA1Plp6UzuC9e4RXUTjHe2Mwf5afcy9kz1kbQBv4/S664nevZ5HniORVvbxtvRKBeVbUef1CccS801Y1zQt5pdU32sMkI8E6jgqWA5K/UQtnRz/MZzAW3b4ccXnsWXjjrYchw1iAApROSOvzyqnX3hVQifjyo7TUkBidK7G6Gaq6ajFJZlc/5ZJ3LYwfugaROPiVRGytcF0GvvB0CvSMGD3z/nK9uPeD0IhIBI2rLp7Rugs7uPjR1drFzdyqKlq1i6opnW9RtZ19ZBIpnCcZwhwfcMwLb1SAtJjZ3kmq6lfCrZ49LTNujTGym/5VYCh3529PvffJ2u075K+u0lo/aaMvs7l5RtxzOBMvzjpOOMZPkOSXRyec9y6qwUCQtkcZTyW39D6Esnknr5RTqPPxa5to2WUIALy+axQfNPyKolheRTyW6u7l5KvZXCFLBXso9PJPs4a2ANL/lLeDg0lVcCxQwIPef3NU2L+XOnc8zhByClvFRK/g6Egftb17dPt2wbTQjqrCThAirGk0CfMGjXfAgPBEd9dn8+sduCt4AX2bw2WwJXhfQ/mw0gIUSXUurzQOmI1wMeiCI+XauqKi9prCovmTl/dmPdAfvsWg1MA6q7e/p9nT19vLVoBQvfeI+33lvO0pWr6ekdIJ1OuxZK05BSsrXxlPLIghu7F7NzamA480GAb9ddMFc1oS1fijFnu2G2qqaO6Le/S+9F38fp7QXpgmeRL8L3y7fjXSM6oWK3TI/OMwZauaCviZBySJqgV1dR/sc/ETjkM6ReeYmO449DrGujL6hzUdl2LDEiE4qnkkJyYLKLG7qWUGabQ+dmez+jjsXn4p18NtHJ6ZU78kygLGfen207nPHlown4jBXAr4QQfUqpOiC6vKllqK9qnZ0gMF6pydYEkHK1DBJCgqMIhYPMcqtJfyeE+NX/8thj7JsQQpGljUMOk6cBJcCUstKi7ctKi3aaM6N+5y8deeCOqbQ5dWAwqb/57lJeeu0d/rvwLRYta6Kruw/Ltt12JF4X7P81eLZPD3Bj12LmmvHRN13A4P3/QEiN0Oe/MHoyrW1h4Oc/x+7pRWgu0/ZioITvl21Hqx6cEHgsBEEcvt+zipNj69z2KGnQ62uouPcv+PfZj/Qbr9N5wvGolvU4fsFPSmbx30DphMCTEpL9kj1c37WEEscc3hhVHs2nDfcwejZQxsv+kpzuoGXbNNRN5aQvHgbweyGEp1vMNNt2yld4AAKYbsULav9Hw90ITQoN4ZjUTK0kEDAU0PS/PvYHKmfwWIou77EYuM8DVpnfZ+zg9xkLDvnUHp845FN77GlZ1vTO7n7fq28t5snnF/LfV95i1Zp1xAbjHsOjDd2gLQmeXdL9/LxrEY1mcnRJuOO6cMUXXUDpFVfCiN5CiUcfpuusM7HXtw8lg/47VMHFZXOHsqgn4jJW2Smu6FnOZ+OdpLx4S6ueQsU9f8a/z36Yi96j44TjsJtb8fng50WN/C1cPWEyYoEZ45ruJZTbI8Dj/atvt10xFy+CVIpBIfl1USPJPKlMpmlx4uc/Q0lRuAu4Z8RLc3r7B0V7R7frPSjFDDNRUHl0jgcgG4GwbaY11BAKBWNMIBVnmwIoD7C6gWe9xy1KqZCu6/OnVpV98shD9zvkyEP32yWVNqeuWL2WJ59byBPPvMyb7y2jq6cPpRwMXfdcPfGBwLN7uo+bOxdRa6VGpa0oG4TUKb36CoouuAg1OMjA9deg0iYqmWDg17/E6RscAs/fwlP4UekcYlKbcEA/w4pzQ9cSdkv1u/VCFmilxVT86U78+34Sa+UKOk44DmvFaoI++Ee4il8VNaJPIKayhKTaTnJt12LqRpybskAYBsWXXYbdtIrUwjcIGvBAuIpX/SU5wWPbNtVVFZx96rEA9wghWke8vGDt+o30DQwipCCkbGrswmLgTE8MRKJwHMXMxlqk60W1figBlAVQcY/VeA24USlV6/cZO2w/d/qh28+dfsC3zjhuQVtHj/H0f1/jX/95iRdffZsNGztcCSZDdzOJNxM8e6T6uLlrEdWbgAfb7chQduONRM46G6e3l64zTyX+tweHv68B0nA35+6OVHN56WzSyAmBJykk25sxbuxazHbpQddltEEEApT9+jcEDjoEe906Ok86HvO9pfh98JY/yhUls4dy8caLqULK4oru5eyQ+XxvUZClJZT/5rfos+eycf990XXo0HR+H20gX7FI2rQ45YQjqZlS3gnctMnLc9esbSM2GEf3+5lixylxzIIqhUgjWJMRA9GGW9IDgx8JAGUB1DrcYqV/KaVCUsoFNVPKP3vSFz5z6Elf+Mz2Pf2xkhdeeZtH/v0sz770BuvaOiZsjZJCslu6j5u6FlGTBTz4A5T/6hbCp5yG09VJ58lfIfHYv0cxbRkRxT9Ga/lZySysCW5iJr0ap+u6ltBgeS6jt1SXXnstoeOOx+nupvPUr5Ba+Ca6HzqlwQ9L59Cu+SaUKa6A7/Su5pBE13A8p0BISfkvfkXoC8fRefwXcHpi+H1wf7iGpUY4p1to2Tb1NVP41hnHA/xBCNE0IsaNAA1LV65GKYUjBJV2mhKncEohNKBN89Hl9Y4VUmPenBkAy714/qMHoCzW6VXgVaXUT4GZpUWRTx95yL5HHHnIvp9ds7bN/5njz6Nl/cZxLVFKSHZID3BT52jXZgg8uk7ZL37pgaeLzq9+mcQ/n8gLHnszwHNQsouru5YMZXFn0oGKf3AR0bPPQyWTdJ99Jsknn0Hzg0JwVclM3vQVT5g0OCm2nlNi60bFcyoN0XPOJHTCl0k+8W/iDz2EbkCL7ueuSO2oPMNssc83TvkileXF7cCmjFUp0LB4+Wqk15Sr3kriyyYxtg0ZuA1awM2BcxwikRB1NVUwjhjIRwZAm4DJ8U58hVIqCXzmT/c9yrq2DrRxCIa0kMw2B/l512IareRo8DighKTs2uuInHYGTn8/nad9NSd47ngf4Dk80cFV3Usptq3hmCQNkZO/TPFlV4BS9F7yfQbvewDhd4/zh6Ja/haein+C4Nkz1cdFvasQqCELoNLg23EeJT/+KcpM03flT1BJG90Hd0dradEDORlD07KYO7ORc9zY55dCiDWbvKXKdpyiptVrEdIF0AxrsJCmDBI3A2FQaGiOSc2UCiKhwFYDkKQAh1LqMOCWX95+f+DKm/84bvsOU0jqrCQ3di9htpdNPdLvURaU/N8PiJ73bdTgIF1fO43Ew/8cAx6fgnsiNZsFnpSQHBVv59quJRQ51pCSkEpB4ID9KP35LxG6Tv/NNzBw8y8RPpeYWOgv4qaiaUjFBEgDwVQ7xY97llHiWMM5aI6bRVF63Y3IigoG/3wvqef+i+GD5UaI+0PVeeM2x1acf9aJRMLB1cCvs7xlTk/fgGjv6kYKiQBmWInCmitAs+G2pHcch+opFZQWR9OMIwbykQWQJ0R/x/0PPxX5wZW3IKSbf5dvr6XMMbm2ewk7pQbGuBYqDdFvnEnxDy5FWRbd3z6H+H1/H1PJ6lPwt8hULi/dvJjnyHg7V3YvJazsocxklQZj7gzKb/sDsqSU5L8eo+//fggSNAGdmsFPSmfTK41xj6NwSxAu7l3FDunB0WyiCdFvfJ3AIZ/B6e6m/+qfgddG8o5oHe2aL+fnp9Mmu+wwh5O/dATADUKIbOIZc7p7B+jo7EVoGlHHYqqVLCgKW+Gq6UhcOd4Z0+oA+phAJvVHDkBKqQbgjy+++m7leZdcjWlaeV03G0EAhyu6l7FvsnfMzrhKQeiYIyi9/uegafReciGx3/9pTCVrQME/QxX8qGQOppATBI/G4fEOfta9lLAzDB4sV6+u/LY/oM+chbW6ia5zz8YZTCA012e/sXg6b/mKJrSflBKSkwbXcczgxjFxj2/nBRT/vx8BMPDrX2IuWo6hw3u+CA+FpuT8fKUUQsD3zz0Fn6G/A9yR4/CzWta2EYsnUMIVpK+yU0NZDoVAYSeFoFUPulZcKRbMnQnu/s/AxwpASqko8KeVzevmn/rNS+kbGETXtTwrj0AIuLjXlcTKBh7/3ntQ9pvfI4Ih+q+/mv7rb3T14cRo8DwfLOH/lc0lLmTegHuk5Tkw0cmV3UuJKHu4qMwBpEbp9Tfh/+SnUKkUPd/5JlZTy5Dr9nC4ij+Haya8WbpHqo9v9zXjjNSIcEAEfJRefR2yvBxr5QoGfnWzK+Ul4I/ROnqlnvPmpk2LfffYiS8e8WkFXCWEGMhyPwxg1uJlTSilUMJVMy0rIDksCXRrhsvAKbfkYp5HYQshkh8bACmldODnfQPx/U/55qU0r2vLWzbutg4RnNXfwldj67O6bcbs6VT88U60qikM3nMXvT/8kStzNeKM/Qre8Ue4qGwePV67kolYhL1SvVzTvZQSxxq2PB7jVvTd84mcerprFW64hviDjyF8LmnQpAe4tniG29ZknOPYCEodkx/1rqDUtkbV3igTomedOZQA23flFdgbuvBJeMsX5V/Bypz5bkopdE3y/W+eCvAy8ECOr1AETF+yfDUohYNgmp1weyQVCoAUdEkfXZoPlENRNExtdRXAsq0J4kIYFwCnfeP7P2Phm++Nq2yaEpKj4218u68Zm01uqAVaRSnlt9+BPmcuyeefpfub56HS6VEiAIaCFj3ABWXzWKsFJrRJmhaSeWaMa7uWUGWnR0kPqzSEjj6c4kt/4lqppx6n72dXuqqowiUCriuZyRo9OG7pg8IVUTm/bzW7pAZGxz1pMHaYS9EPLnWP858nGfzzvUjD/Z87IvX0S32ot+pY62Oy/9678pn991TANXlW6kbTNEtXt6xDeEmkM6x4Qfn8ElirBYgLDWU7lJUWM6WyFCZYy/ORAJBS6ijgskuv/S1/e+QpgoHAuODZI9XHj3pWYOCMDmgdwOej7JZf49/vk1jNq+n+2hk4PX2IEYS92wxY55KyuSw2IhOKRUwhmWqnuLZ7CdM3oclVGnzz51D2y18jgkHsdWvp/ua5qMEEaJl0oKk8FqqakOuWEpLPxdv5cmz9GEZR+DRKr7gKrbIKlUjQd9kPUXETQ8CbviKezNHFLgNMXWp8+6wvA7wAPJbna8waTKR8revb0TSJDjRYCQpNyKfJCLsLjnKoriqnOBq2ydOS8SMFIKXUfODX9z/8lP+6W+7CN47lMYWk3kpyZc9Sym1rdD2+ctNZSn5yOaFjj0cl4nSf+3XMZatGkQYSt5L0itJZPBcom3BJQlhZ/Kx7GTulYqODeRtkSZSy39yGVtcApknP976NuWQl+NyS71VGkJuLp8EEKkNNT2Tkot5V6EqNWiBUGsJf/SrBo44BIHbH7SSffxnhd9eOO6J1xPLFPmmTPXZZwCH77wXwCyFEvh4nswcGk7S1dyKkJKwsaguMgXMBlKGwFXOGxUA2fuQB5JEGv313aVPNd354A0qpvHS1gyCobC7rWc526fgYTTOXrv4aRd+90I0LrriMxGNPjGHcdAW/Karnr+GpE7IGGUfo+71NHDwyfSbzooLSK6/Cv5/bWrH/VzczeN/fXYFFXCHDG4uns9YrNx7vWD7lcEnvShq8wrih1yzQZ9ZTcpnrItob2xi4/lrQXHf0TX8RTwYqcsc+uK7kuad/CSl4ZxzrAzBv5epWkqk0SgjCjk2NlSwoBi4uBes8OV7HcTI5cOsZR8/6owAgAfw0Fk/ue9b3rqCjqycv4wZuDPHNvubROWAjGLfgZw6i5JobQAjif/8r/dfflJVxeyxUyS+LpqOpiZUppj0a+asD67KSFZGvnUHkrLNd1+u/L9B3+WUuWSFc1+2RUCWPbobr9tXYOg6NZwOqoOTSy9Fq61yC4lc3Y65cM+Sa3hWpJSY1RA6QmqbFzvPncMxh+wPcLIQYL6Vg9rKVzZimhUIwxU5RpMyCsUAS6Bc6bVrAk+PVmT19SI7X/EgDSCl1EnDed390A6+9vWRc1Z+k0DgqvpEzB1rH9AxyNy1nUnbrbchwBGvFcnq+ez5Y5qiz8ylY5At7mdUiZ5C96YTeN9XDBb1NqE2khlUK/PvsTunPrgEhcLo66f72OTg9MdDcOGu97uPmomk4EwBrWkh2SQ9wbl/zmFVepSH0uc8SOvErLhhWLCf2298gNPe83vFHeTJYkTeWcxyHs087FkPXFgF/Gef+FANTVza14jgOjhA0WEn8qnDEgIWCHmnQofkQjiIcCjCtvhpg6dYG8tYGzzzg2j/8+RFx5/2PEvD7x40J5psD/L/elWiZmMBx2TaVAhkNu61Opk1HJRJ0f/s8rDXrRmX5aQp6NZ0flc5hg+afEF1tCUGtneSynuUUOfZoGtkCrbKEsl/c6nbFU4reH1xE+vV3h1V7FPw22sBKIzym9Ug29zTiWFzSu4IyZzRljQ2yLDokrwUwcNP12Bu7QXdBfU+kxmPeclxDy2be7Ol86ehDAW4VQsTGOf1a23ZKVq1Zi+YxcA1WAl8hUdhAqx4khUQph2gkRGNdNVuTQICtnEzqtb3/1aLlzVN/cOWvxtVHsL2J9aOeFVR73RGUBVpxBFFcDI5G0fe/R+CAA9344/pr3ARR32hfUQh39/8Vf8mESAMHV3r4x91uvLWpOyWAkp9eiW/X3QAYvPtOYr//w9BxfQpeCRTzl3BN3r5Dw4uE4Oz+teyd7BvrJlpQ9I1z8O28i2up3nqTwXvvRhhu7LPMF+LxQGVeGt62bM766ucJ+o01wJ8ncKvqTcuKNjWvRdM0NKVotAuvjLtZD2EJAY5DbXUVgYBPAS0fWQAB3zct54DzLr6Kzu6+cfd7bCE4p28N+yZ7XfCkQZ9WT8Xd92LMngu6jiwpcd28Z/5D/7VXuzHBiEmYqSi9J1w7YdLAEpLv9DVxaLZ4Kw2RrxxP5IyvuZZq+TJ6L7nQ6xA+LDF7c9F0YlIb95hpr37pzIHWMTK5ygRjuxkUffu7mRWI/uuuxukZRPjdjcT7wzV0abmVWC3LZua0Wr563BEAv8mR8zaGwu7pi4n2zh6EdIv8Gs1EQQkpji7jdpg1rQFD13rYClWo2wRASqn9gIsvv/42Xlj49rhSwUlPBuq02FpM4TXtLS+m4g934N9739EXs7ODnvO/iTOQGGV9fAre84e5smSWWw40ge+ZEhrHxNv4Wn/L2HjLdDMcSq68DqSGSqXo/u63sNZuHHLd/ArujkzhxUDphNqZhByb7/c2UeJYY2tsFBRd/ANkVZX73V76L/EHHkD43HNZYwR4NFSV1/qYlsVpJxxJUSTYCtw+wdu1oGnNOuKJJAiXwq+1UwXjvmWEFFv1ABKFrRSzZtThsW9rP3IxkEdZ3/TcK2+Ffvn7v+D3GePGHzV2iot7V+F3HBwHZDRKxe//gN/riTrs4pj0XPhdUm8vHrPfMyA1Li+Zw0bNN6G4J+3FW5f0rByzB4MCoWuUXHk1Wl2GCfs5iUcfHzqupmCd7uM3RQ052bBNSYovD65nb8/CbsosBj61N+HjT/TMsU3/9Vej4mmvgzj8IzSF9Zo/Z/KrbdvUVVdx2pePAbhTCDHR/ZG5q1vWkUgmcaSk2k4TdQpLSDEpNFq1gKuhruvMmdEAsEoIkfrIAQi4MJ5I7XbBpTe6jW4noL7znb4m5ppx1wooQeSM09BnzyX59FPYXcNeiLlkCU5fH+HPH4nwB4aiXF3Bb4saeNFfMiHXzUZQ5Fj8uGc5NXZ6rDuVhvBXvkzo88e6k//11+j76RWjXEYd+FOkjiY9NG66jikE25mDfL1/zdi9FQXCr1F08f8hAsEhFzXxmKuQKoGNmsEDoal5j5M2LU74/KFUlhV1A7+f4GJXDNQtW9mCo1yCo8ZKElV2YeXAaT66NZ8LIEPPbKIu3hZkxv/a+uwLfPeKG3/PG+8uxzeO9UkJyWHxDr44Mn1fd3fd1y9YQO8P/x9ihFyrb/sdqPzbQxgLFqAS5pAb9XKghD9E6yaUpuPmngm+3b86ayCPCfqMekou+ylIgUrE6b3gfJzugaH8OkPBYl+YP0dqxs2rU96FP6+/mSm2OSa2cBspf5ZgRi3Vsui//hpU0nLFIBU8EapktRHKaVltx6G8tJizvnoswL0jtQ7GGVOA2qUrV6PJTBl3YTJwcaENJZHWb8Uy7q0GII91u/KVNxeFfv3Hv45LGlgIqu0U3+1rGhKQzwTPqjeGLApRev1NQ8SBa88FA7+8if6rrgZsNAG9UuOa4pkMCH1CJ5gSkiPi7Zy86Wap8uhyoORHl6HVuyL2AzffRPKZ/44qylO4tHXXBIrk0kJyUKKTw+IdY8HqgAgbFH3vIvAsdfLxf5F86j9D1mdASP4aqs67t2SmTY489JNMr58SA36zGbet3nFUuKl5LVJIJG4SaSGl8GhAqxYgKSSOJ4bv9+k2W6kKdWtaoDNNy/7kRT/5BfFEKm9HB2+znXP6m5ltJsYG8DYUffcC/HvtPer5+F/vo+eii92dNem6br+P1vOav2hCrpspJLPNOBd7+0xq5BcCREkZ4WM/T/jLX3Xf/9ab9F139ajkVJe2LuFfocoJtVYpcUzO7WtGH3m8EURF6Kij8e+zn/e3Sd+N16HSDgjX0r0YLOVdfxQ9T8FcMBDgG6ccC/BvIcS7m3HP5rd39tDV3Y+QbnHhdCteUP1UbaBZD+J4cV5D7VQi4dDgtgDQ/4yFU0pNB3546x1/48VX3xnX+qSF5JPJbo6LtY3Nc0uBf69dh7onWC1rGLzrLpyONgbvvRuVSiF0dyK/7i/iD9H6CbtufuVwcZ+bezZSJkpZUHL5jwl/+atoVVVgGCjTpOeHF+N0DvcIEl48c1tRA3ExEdpacGpsAzunY1lZNxHxU3T+98hskCUfe4TkM88P5dZZAv4WqiaNwJ+nXPvQT3+C3Xac62ym9QHYbkN7Fz19LoCKHIsqO1VQQoq2cFsyaoCjyLQj2apJpFuDxr54fVtX1XW33IUxTp6bgyuCfn7faoLKGZvCH/JR8rOrkdGoO4nPP4/BBx5xN0l19yGBmNS4umQm/VKfcO7Z2QMtHBIfrbGm0lB0wfkU/+CHjNxUGrz7ThKPPT6GKn88VMZz/rIJNTGut5KcOrA2a1KmSkP4i0fi22Mv7+80/TdeC5YDfte6LvaFeTFQmjPOUkqhaZJzTz8e3JKFZzbzvjU0t24gnkhiBAJUWG4VqlNAdQxJIVmrBxBKIaRgvqsDtwrY6oon/xMXziMOvvqTG25j/cYOtHH03NJCctzgBnZP9WfNso6cfhqBAw92XbZ7/kT8wUeQXjv5kUH8HdFaXp4g65YWkt3T/ZzdN5oFUyZEzjyF0mtvGAUeq7WFvkv/b1it3bt4cSn5Q6R+qNdq3oVCCM4YaKXBSo1tjegtFNHzvj1kfRKPPETqhZeHACuBh8JTvXLtHEmjlsWuO87j4E/tAXDL5iRWKqVCQP3i5U1DmeRVTpoSxyqoJNIOzUeP9CEBTUq2mz0doGVrCCn+zwH02muvGcClr761JHjvPx4fN1HUEoIGK8EZA61jbpKywJg/ixKvytNqbaH38h8P2/IRVuB1fxG3RRsm1OgqQ1lf0rOC0pG5Zxb499qNom+ej/nee6j4cMJy6j9PodVPI3T04Wi11eC4oH06WM4rgZJxmxlnMg6+NLg+a3t5lYbgoYfg/8Q+7t+JBAM3XofyMlElsFE3+FewMuc5KuW2NTzrq19A1+Ri4NHNvH0lQOOSZU0IT0hxmhVHK6AASFOwUfPTJzVwbEqKi6iuKoetICS/VQC02267HQYcdPkNvyOeSOat8ckE1afG1rqrcpaYIHjYEdhdXVjNq+m79P+wmlrdMoURJ9AnNX5WMpOeCTBgGdB+baCFvVL9o+MQDcyVK2jbbz+6vnEm2MOgCH/lZKa+8CJF37sQlTIRCgal5I+ROjedZJxYy6cczulbQ9Rxxq7m3r5P9JxvDjFviYf/QfKlV4bO1afgmUC5WxJO7hYlc2c2ctxRB4ObthPbzNvXkEqli9as3YCQro2bacYLqgpVAGs1t5WJ4zhMqSyjuCgMsGRbfJ8tGgN5tPUl/3z6ZfnU8wvHzTgwEcxPx/jiYFvWVVkYEPvNLcT+8DtEIIjT1TmmQM5QcGtxIwsnmCiaEpK9k72cNtA69pgCVF8/yhEUXXARIhodAS4Nc+kSuk47Bbutk4ABjwfKed1XPK71cTUcNvLpZFd262NC4IB9CHzaTYpVyQT9N9/ouov6sHzTQ6Ep+S2rZXPqCUdmkkbveR+3cG5fLC43tHchpVvy0VhgQooATbq7uew4ipqplUTCQZOtnIX9v7JAX7Qd9YlrfnnHUP/U8ZaTk2OtlNu5fWyVNlEDgzjtnV5Z5WjwLPaFuSdSO6GsZxtBiWNxYd8qItksgTeZg4cdSvBzR43+37Y2Ok8+CXPVGqQPEkJyV6QWe5zYx/GEH7/R34LMthnp7apGzvw6eEpEiYceJPXKq0PWR1eu1tsbvuKc1LVt29RWV2WEEu+YYNLopmN2T98AHZ09CKlR5FhMLSAGbghARnjIZZ3rZiBs2BYM3Ba1QBs2bAgDFzzy+Au8/Nq742YcmF7nuMPjHVlX5VE2W+RG/z2RWnqkPrGOcUJwRn8ru3s9e7LRgSLso+jCS9zaG6WI//1+rFVNJP75COlX30T4vUyAYCmv+icS+wiOi21g+2y0tRfn+XaYPwRYlUwy8Isb3c0Obfg8HwtVEZNazvNMmxZfOuoQKkqLeoA73+dtnLNydSupVBrp81FsW0y1C6uMOyYl6zU/EoWlFAvmzgBYg6tG+uEF0NSpUz/rKHa+6ba7cSYgniFRnDnQwhTbJiGGF+N8+BGbuG4vB6I8FKqaYMc4wW6pvuyu2wjrE/7SMQQ8fYPU88/S+ZUvo5I2SJf1E0BKCO6M1mEKkbdK00LQ6NHWlsjN4YdPPR3puYuJRx8m9dKro5i3Dk3nP8GKnOSBoxSlxVHOOvkLAH8RQqx8H+63D5i7eFkTjlLg6XFHHaugUngyVaiZJFKvjLtJCGF9aAHkCSOe9+RzC3nl9UXjxj4OUOJY9Eudh8IV+JSNXzn4lIOGCz7luVxJoZESElMITAS2kCgEcSH5U7SO/gm0gXeAkONwQV8TRY6dvTWHA7IkRNEFF4MQKMum/7prUEl7VMqOmwlQzMt5Or4NuVVCcEqslfqRm7SjfUr0+imEv3SCex1TKQZ+eRPKGV6AfApeDpTSrAXz6Fyn+fxhBzCzsSYJ/PZ93sZyoHb5yhaXzQOmWQkMwCwUACno1Hx0SR84iuKiSEZIccm2+k5bygJ9GtjvV7ffN9RAeLyVZEBo/Kh0DpoCDeU+NrFcypuENgIHgSPcmCLTQ1dXasKCiCfHWtkn2ZvX+kROPGmo8jP19JMkHn98THWrA/w5XENSyLz7TW4peowvxtpyH9OC0LHHodXUApB86glS/31pFMtoAv8MVmELkdUCKaXw+3x8/eQvAjwJvP0+7+HMVCpd1Ny6Hk1KbASNHoVtFkovINwiurSQ4JiUFEeomVoB2yALe0sD6Iy3Fq3Un33pjXGtz2gGTQ2BwUaAkFlcODUEJ6lc129z7qclBLOtOGcNtGCLHBnFNsjKEqLnf88Dk+lmP6dGWx/da3P/TKA8b+yjvO99xkAr5Y6VM96SxSEip57h/e0Qu+1WlKmGjqkrt2jO3WfKrbaz9+47svfuOyjc7trvN+ZvSFuO0bJuA1LT0JRDvZUoqBw4gduJwfGuV33NVIIBX4pttAe0RVg4pdQ04DN/uPdBBuOJzW4MnIlxpBcXbfoQI96Th0/IOZEBzutrpsZK5yxJVhZETjkVY85c1xL86zGS/3l6DGUucVug9HrtBPNZn91SfRweb89r8QKHHIKxw86ulXz7LZJPPTXK+ujAc4FyOqQvZ+aBUopTTzgSTfIu8PgHuJXTurp76ezqQ0hXg6/BThZcN+5m3RVSVI7DnJkN4LYxaf/QAgg4trtvoPThx5/HMAqq4R1pITkw0cUR8fbcLQlt0Oqq3BQavPyzm65FWaO1qHSgVffz72DVuNZH96xPOAdV7kr0SiKnnTl0jMG7/4QzkBx1R5JC8HiwIueiYdk2jfXVHO1qvf3Ba5f5fsecFU0tpNJpFIKIsplqJwuqCnVQStZnhBSVYs7MRoAu3I7cHz4AKaWCwImPPP4C6za0b3Y37f/tauXu+XyzfzW+LGUDo6zPGV9Db5zmsWAPkXruxVGWIONOPRaqYl2eEuqM9dk72cMBia681se3684EDjzI/a4d7cQf+JsryDjieKuMEO/6inLu/ZimxVGH7k9JNNwB/PUD3EcBzF3e1EoqbeJIQY2dJFJAzYQlMCg01usBpOPg8xnMchm45q0ppLilLdCuwE73Pfg4haY6nhaCEwbXs3MqlnufyQJ9eg3Rs87xWLCkm3+2ifVx6VONv4en5hVkzKTsnDHQQiAPaFEQPvn0oXLt+MMPYa1eOyoi1YFnA+U5+/wopQgFA5x07GEAjwshPoiYRhlQu6KpZWjxqbeSBFXhOHAuA+enRxgIpQgF/Mx0u9Et3tbA/iDjiObWjdqrby/G0AvHfbMQTLcSnJJFKmrUJLQh+o1z0WpqXOvz4D9Ivrgwa7rQs8FylhmRvKxfWkj2S3azb7InP2hn1BH64rGeBbQYvOfOUeyGAOJC8EywLI9YosVuO27HjvNnOsBdH/CS1di2U75ydcuQXkWDVWC9gIA1epCUECiVobArYSu2MtmiAPI23g588rlX6Onpn5BQyFZz34Tg9IFW6sYhDow504ic7uq7qUSC/ptvYFMd3szG6d/DU/NOJgUElMMpsbV59QOUDaFjj0ercvPazLfeIP3KK6NAm3HfFhm5q04d2+HYow5Bk3IR8NwHvGQNlu2EmtasR0qJXoBVqBJo0VwK23EcGuqqMTRpbksG7oNaoNnATo899QKigMBjCsnO6X4+P9iWP0XIhsjXz0ZWVLrW5+EHSb38albr864vysJx0nbSQrJvsifvXpNLXYeJfPWUoacG/3IvTiw1CrQa8EKgLKdcr+M4lJeVcOQhnwT4xwckDwDmtXV009Pbj5QCQymmWYUjpJipxF3jJZHats3Mxjr8fl8vbhrPNhsfxO/6VGd3X+DNd5ePIg/cmhSF4yhsx8FxHJd1kgIpxZjEf3fXW6EcheP1udSkRNPk+7JqEsUZAy2UOHb2/RcviDfmTCN8stuKUSWT9P/Cy37OMh4MTSUmdALKzhv7fDW2Fp9SORk/ZULw4IMwFmzvAqG7m8SD/xjVOS+Tef3fQFnOsNK0bPbcZQH1NZUW8NAWmAfbr2ldT2wwjhKSYq+ZcCFVoaYRrDGCSHftY6ZLILSxjZJItwSA9li8vJl1GzYihCCVdtA0ScDvJxjwU1leSl1NFdVTKqmuqmBqVTnlpcUEgwGklCilsCyLZCrN4GCcnr4BOrt62dDeSdOadTStWUtffwzD0Ce8t5T2+pceHO/KTVt7liBy5lloFRWu9fnnI6RfXjiGedNwhRKfDObfODWFZL9kD3vnsz4KhCGJnHL6sN7BU49jrWoe0z1vtR5gkRHJ2fBYOYrPH34AwDsfNAZQSmnAzKY160kkUxjBIFOtFEUF1ExY4Ga/r9X8SKUQusa8OdMAlm+rHLgtAaDoYCJBY10128+bxQ7zZjF3ZiMzp9cxvaGWcNCPz6fHfYYRA/q9laIXGGS4MEEHQoAfKPXYoEhsMFHS3tUr77zvUW7+/Z9Jp81xQaRwU3tOHWglpJzcVsACfXot4a+e5lkFk4Ff3YyyGJV1kHHf/hOsYL0eyNs2UVOKk2LrCI5zXN9O84ZK01GK+H1/RjmMEtjXFLzmL6FL82UFre04VJQVc9Cn9gR4UAjxQQt2yoD6JStWI4TAEa60WFQ5BZMDpyloMwL0SwOBQtf1zB7Qsm393T4IgDYc8qm9ePvpewkF/UlcTeI1uP1Zlni/r8et1egGzFxpJt4+hAb4gKpIODgjEg6e/KMLzjzlLw8+QXPr+nHz60wh2TPVy6eT3flzt2wIn3wq2tSprhV48nFSz784JvbJMGGPjFPEZgrJrqk+9k925T+uA6EvnYgIu7UsVtMqks8+Pcr6gKs480KgbNPSp2ESz7LZafu51FdXpoF/bYE5UApULV2xehQDV2g5cOs0PzGhoxybsvJSKstKAFZ+mAF0la6JVj3oXwe8h9sZ7H3VZHhiEJb3aAaalVK7tq5rp6evP6+e3MiLfHxsA2HHyRn7YINeXe5mALjRKLFbfoFK21mtz1v+KO/4ouPW/BwfX08k33EdkBVFhL943NBTiYcfwu7oH3VcCXRKg7d90Zzum+M4HLr/JzKr7ztbYA7UpdJmsHVdG1IIHGBmgTFwmTLulJBotklddSWhoG+bCCluMQAJIdYD1/4Pv9sBby9aQW//wPjWB8Ecc5ADk515mTdlQfCEE4eyDlKvvETiqbE5b5mb9lioikGRu4jNQjDLHOTg+DjHNSF00MHos2dnzAjxB/46xsS4slUR1muBrNkOSinCwQAHfnJ3gGfytKjfnDG3o6uXzu4+pJRDZdyFBCAHWG2EAJeYqquZQjgUTLCVW5lsaRr7fzaUUmXAvJdffwfLtBhPMMoRgiPjG/OWhuOALI0QPf2soadiv/01KpEeM5El0K4ZPB0sz6vyYwvBUfGNVOY7rnKd09AJJw05Zem33iD95htj3DcJLPSXks5RJm7bDo31NcyeUQ/w/Ba63Ntt7Oyhu7cPNEmpXXgMnA2s1oNDk9WLfzayFZsJf6gABMx0HKfhxVffQRtXlFFQ7pgcFm/HyjGBVRocE4KHH46x/Q6u1Vq6hPjDD4+ZxBn3bWGgJK8CTkbr4PB4e979EnfDdiaBTw+3ZYk/9CDOQGrU1XeZJsFr/uK82Qd77DyfUMDfA7yyBRYqAcxatbqVdNpCCfecKux0YeXASY0NWmAojWrB3JkATR4h9aGNgf6X4xNtHT3aquZWNDkeeSDYO9HDdCsxNm3HAXQN3w7b499nP4q++a2hlwbv/CNO98CY2CcTyP87WIkzVBub/bh75TruJt8heMSRyJJSd9LG4yQefWjM0qUpaDX8rNTDOa2elIJP7b0LXuyzJRpJhYEZi5Y1DS0K1bbbysQqIAC5QopuDpzP0JntljGs+AC1Tx95AO29ZPlqOrp60ccpkdCU4vB4O5pi9ERWgNQov+12Qsd8cYj9AnC6u4jf/5dRG5hDn+cxPq/4S/LmvUngsEQHhiI3eaBABH2EvjBMHqRffxVz0ZIxlk8D3vMV0aMZWUmLTPLoJ3bbEeCFLTR5yoG6pSuah6ptZ1gJZC4KcFsASEG7dAGEY1NWUkxVeUmGRCkIgBda/BMCtn/1rcXYtp33PtpCUGcn2SPVO7abQxoCBx1I+MtfGQUegMRjj2KuWpPTfXsxUMpGT/klK3kg3HLnffIljZLZ+9ke3267D7tv/3gAlbLHTFABvOYvzukO2rZNY2011VWlAAu3lKs8GE+G1q7f6FHYghnWYEFNCgGs0UOYQuDYDhUVJVS4FPaSSQDlXhWnvbtkBYyzeWoh2CXdT5Vtjm3HGNAo+t6FY8vEHYfBe+7KmrbjdlqAZwIVeVkoC8EBye6xx83mvh15NMLn0nxObIDkE/8ec9XddpSS94wouRxWy3bYbvY0opHwAFuGvgaYk0im5Lq2DoQm8SubOitZcBT2KiPkXj+laKidSsBvxL0YaBJAWUZd2jTD6zZ0jCsLDPCJZM+Yk1BpCB1zDIEDD8Zu24DT2TEcu7z3Lqnnn8smv4AGrNf8vOEvyq0/DYSUw2Hx9vwTzQEZDRD87OEj3LfXMJcvz8q+bdT8NBmh3Ok7SvGJ3XYAtwtb25YCUHtXL109fQgpiSibGitZUN243V5AHoAch3mukPw63ErUSQBlGbXxREr29A3kTSZ1gCJlscAcGH3DFYigjj5tOt1nn0X7Zw/G6e4Zejl2958AA626cgw/oCt43V9Ch+bLWXVqCcn26X52SPfn3alXFhg77oixw05DzyX/9Sgq5Yxx3zQFS3wRBqSetTmx8oLnPXZZALB4C+3/AMxZuqIZy7RQCIodiykFRGFLoF/T2JBxpxXMmzMd3P2f/kkAZR8VqbRJ/0AMkScDwRGCKVaKRjMxWjlTAMqm/8br6L/1Nozt5qHPmZMJJAh86tNMeeF5jB13QpljQflCoBQrT+TlAJ9NdBB2VH4LpCD4mc8iPLlelUySePLJrFdcAIuMKGlk1iM7jkNVRVlGRPDVLRRr6sC0ZSubsWwbRwhq7STBQmomDPQJnXbNj3QUgYCP6Q01ACsLgYErWACZpk1sML/Cj41gjhUnnO2GK3e1koZG5PQzRyz1GsEjjkQl4qSefW6UK+XSpQav+Uvy7v1U2mkOTHTlp3kViJBG4NDDhl3HRe9hLV0ySvcgA56UcOWytDwNg6fV11BVVuKwBfZ/vFEFVK1c3Tq0MDRacXwUThWqUNCu+emVOiiHaCREQ91UcPMtmQRQ9hFOJlMkU6lxRNthdjqWs/pTmeDbaQH+T+4/5rWBn9+IE0+POntdwdu+Ilq1QM44xBSCT6R6mbap1cvmvm23HT5v0xYg9dwzOLH0mCsugF5psEoPI3Mc17Zs132TtLLl8r/qk6l00eoWV0gR3D5NegExCJkybgu3jLukuIiaKRUUCoFQqACKDiYSebs7uAVsihlWPK8VCH3pREQwOOrp9JtvkHj00TG1PwJ4JliOmSONJlMucXi8HW28VdoB/377j6LPE/95MutbdeX2++zWcvc2kpo2Mv7ZUukr00zL9q9pdYUU/cqm0UoUlA6c9AgESwhs22F6Qw2aFCmgpVC+YyFupMp4IjXum/zKyV12bINWUUTo818YfmrjRhIPPUDst7ei4olRZ55R3XnNX5zTfbM9oZK9Uj3jp/lLCB586PD/bliP+fZbWfedJC5NO5ijQbHjOBRFQuw4bxZb0H0DmLd+Yxe9/QMIKfAph4YCAlBmS6E10wvIdpg9owEpZSdumcwkgHIMI51Oo/LKRwnCysqZ9KgsCOz/afRZc4b+o+f8c4n9+W8IydjKUwUrfWG387PKvXl6YLKTCtvKW+2qUiAri/DtOrx5mn7rTez17VkzHxxcBi6nMXMUUyrLaaibAvDalgTQytWtJJMplKZR6phU2emCElJMCEmr7ubA2YJMCs8GtqES6YcBQBHTsvP6SI6ASidN0MnBGEkIfvH44cnftIrEU08idXKm77wcKM0pGK+AiLI5LN6Rd4VWFuizZ1B03rBUVib+UbYaY4Eyq+wyI5JXfXT77WYS9Pv62EIFZB4DN2ull0SqhQxqrSRhZReUBYoJzVUiVQrdZ2RYyOXbopnwhwlAwrbz30YHQbmdJqCcMQBSFuiNtQQPOng4/njsUZyOvqyJoxkRj1f9JTmP52pd97IgPZA7cVSBMHTKb/k1gRHum7JMUi/+N2tumQQ6NYMNmj/vBupOC+aAm76/pXz/SmDqilVrEMK1grV2kpDj5Fcy2pp+vII2LUC/0BFKEfD7mD2jAbaxDtyHgUQYdzhAsWPhz2Z/bAgccBCyqsr7285avDbyAmzUfCw2wnmzDw6LtxPMJxGchuBhnx3WPMh8ndZWzKWLx9DXmUmyUfPTlUM8XimFYejsssNcgPe2gP5BZlQDlctWrUFKd++p0YqjFdA91nBbmSSFRHkyXuWlRVAgSaQFDSBNG/9rFTkmWjYKW0LoqGOG449F75J+7fUxcc9IFmyRL0pPjklsI6iy0+yfzLP344AMGRR9/+KhLttDx3/9Naz2PpRiTG6fBNbqQQalltOFCweDbL/dLIDXt+AlnplImUbrujZXRgzFdLOwGDgBtOgBV0jRdphWX43f0JNsYx24DwOAYrqujZdHSkSNzdRWFugNNfj23mfYfXv4IZz+RN70/Df9RaRF9iwAUwj2TPXSYCZzum/KhNAXj0WfNQfzvXfcjdzM/y9bQvjooyg6/9sI3RiD+BV6OKdVs2ybhrqpFEdDivffOCvbmL9uQzu9fTGElBhKFRSFLXAbi63RQwivjHtafQ1+Nw5sngRQ/mH6DR/5ZrwAAtkIBBv8e35iSDZXJRPEH34w50dl4p83fcVIspMHGnBQojNvsCh8YK1ppm3PPRi8/75Rlqbo29+j8h8PIvx+dyN1k+/SZARzfq5tO8yeXk80Ehpgy6bvz1y7oZ3+gUGUdKtQy510QZVxW8It49ZQCCEyvYBacaXRCmYUIong+AO+cd/ky7FuB0aQB+m33sB8++2c7psE1ul+j77OTlZU2qms9UabIjH5/Evu99plt9EvRSLYrS3E/nj7KBZOAHEpWK8F8mZczHe7ULeyhfY+PCHFhpWr12JaFrqhU2WnKHXMgrJA/VKnTfMjFGhSMm/ODNiGzYQ/TBYoFQz48yaSChib9uKAjPrx7To8gRMPPOB22Ba5459lRoRuaWSNfywh2DE9QLWdGndyCR1kWQTfDtuP9Ulv/x32+s5RFLqbKGm4iZI5yAshRIaBW7oFM7CLgYYly5tcIUXcXkBhxymcJFIFbZp/KDvd5zMyQiothTZZCxFAA6GAH5+uo/KwYvYmQZJyQFZUoE+f6eIpFiPxr8fGPcO3fEU503cEsGeqN2+3haHj26A3NKLV1o2IjUxSL/2X2B9/PzaJVEGfptOZo3RCedTtHJe63ZLMUwVQs3RF81Cq1HQrUVDtnTRggxZgQOoo26ayvJTSkiJwa6EmATTOGDQMnYDflxNAAKkxlaagTZmCLHXFO9ILX8Fctixr+swwQeAmkMocIA0oh91TfRMrMHPAmLdgqGkWyqH7nLPYeNCB2GvXj3GWpTdJUjlugeM4VJYPUbdbUoFzVmww4V/f1oGUbvXRTDNecJOgRQ9iInAch+opFUTDQYcCo7ALFUC9uqYRDAZy77kACbEJ9atAr28copHjf7sva/HayFVuo+ZjjR7MuolpI6izEjRa8QkH15muCwB220YSjzwIyXTW7AcBrNUD2IIcNUCKyvIySoqjbGHmaW53X4z2zm6klASVQ12BCSkq3G7cwrsODXVT8fuMQQooC7uQAdRnGBqhUCCvBRoQY9M+tTrXfRq86w4G77wrJ3mQiX9a9SDtenbxEFsI5pqDlDnW+MG1cmMg3w7D5Qvm4vdwevohD4GxXgtg57FAddVV+Aw9wZbd+5i7sb2Lnt4BkJISx2SKkyqoPSDbY+CEd3HnuwRCM9uwmfCHCUBdPl1XkVAI5aicJEKfppPeZPXWautIPPYIXeecg4rHc55dpnXh84FyzDy6pzukB5ATaXOoQIT96HO2G2YA33wjq/pO5vvbuFkIuT5dATOn14GbPNm7hRg4CcxcurIZ26tCLXVMKu103vqmrT0h+6Q+TK6oISayGSg4X7MQaezOcDhoRSMhw1G5AdQtDVJe8qfyfLLkk4/Tf8O1qHg8Z+mAT8EKI8Qvihv5Z56W9TqK+ebAhFwbZYNeW482ZbiTQ+qVl/L+T1IIOjUj5wqmlGJ6Qy24AiIDW+jahoFZi5et8hqbuc2EA8opGCERqaBL+ujUfAilCAYDTG+oBldIUU0CaAIWCEiVlxYbuVw4qRTtmp+EkEPC70KH5BNPgSRr1rNPQb/UuD1aw++i9bRpfvzKyR5/ICizTeqs5MRcGwf0adORxSXun/39mIsX5bSAAreLeKf0ZRURAZfCrq+ZAtC+Bdu41wKVK1a3gteJYboVR1MUlAXaqPnpkzrCsikrK2VqZTkUUBl3oQNoEOiunlIZyX2RFd3SoEf6KLet4ZuvZ491BPBssJSfF013i+aUytlxIeODV9hpquzUhCeWMXvuUAaCtboJu7U1LwOYEhrdms9VAc1ifQJ+X0ZAcMMWvLYzY4PxUOu6jWiaxAYarUTBCSmuNoI4CISXRFrhKpFOAmiCIw5srK+d0pArPnBTcCRrjCBzclCwmhfrNBkBfl3UyIOhKSRzVH2OjT+GNxcn2mTK2H6YgTPfewdnIJW1fCLjpvRLnXiO/DulFOFQkNKSKGwZDezMqEumLLFufTtSaviUQ51deEmkq/QQDiAchxmNteia7NvC1+EjDaAU0Datrjpn9J4B0Go9hNxEX08AfuXW2dwbqeHOSC3rPXfNpyY2VRQwbXM2F3WBMXfe8AksXDjuJOmWPkxkVhIho4NdWlwErojglhqz1m1opz82CEIQUja1E3VTtxJ40gJaNZeBc5Riu9nTMnFg9ySAJnIRhVBKqbW1NVUYhpH3vauM0KgSA8Pz5R8MV3FLUSOLjci47lqOkIb6ibo2DmgVJUMUOraNtXjRuH5+jzRyC5goCIcClBRFtrQLt92yVWswTQthGJTaJpVOYZVxx4RGm1fG7TDUC6idAhFS/DBYIIDVlWWlFBeF6R8YzKpQqqFYrodJSoGhFD4Fy40QNxVP51/BSmzBhNy1bNZHRzHFTk2MgbNAq5qKNsXtuWr39mK1NGctoBsJoD5NxxIyKwvoKIfSkmKkG6ZsERUepZQBzFi+ag2mZaP5fC4D59gFlQPXr+u0aT6kowgF/cxwhRSXFyIDl7mXhTiWV1WUUlIUxXFUzovdqgfpkQY6cE+kmq9U7cxDoSoEKm9rkvEAFFQOZRNt865Ab2hAhDz95o527PXrGa+8s1caORVQlaOYWlmGlHJgC668NUDVytVrkcJlGhusOAFFQSmRbtACbjNh5RAOBZnmUvmLC3SeFqwFaoqEA2bNlEqjqWUd2WajRNEndZ4KVrLYF+EvYTdmCqgP6tELAsqmZCIZCJmLuN1w/GM1rUQl03mXJgWu2mZua0FVZRkeeLYUgOrTplmycnUrUtNQXi/UQlpBJdCsua1MlKOoKC+loqyoYBm4QrZA7UDbvDnTySUwklm7ryyZyZ/D1WhK5dR021wL5FcOxY6JmigDN3c4A8Fcvhxlk7cC1gEGpJFzD8hRiikV5eBuoG6pTdQZyZSlZ3oB+TxdvUJj4NYYrhKp4zjMbKxDkyJGAZYxFDqAuoGN2283K28+HLgdug2ltlg6vhLgd2xCE4kNFAifQJ82fdgCrVqZ1ycSuLJcgzko7MyorCgF6N+CQiIL1qzdwMBgHCEFfuVQn0uYchuBJyXcLGyB21Bs1vQ6NE3rmgTQ5jNxJrBk/tzpBAP+vCDa0gRSpv+PzgQKzByQRVG0unrvbwe7efWEjpEW+S+9oevAFp3f81a3rCceT6KEoMIx3ThPFBKAJC1aEKkUmpQZGatWIUT/JIA2f7w8f84Ml0hQaqveypCys2YIjI1VQJSUoNXWun8nE5hr1ox7VRV4e0B5WTNgyyhNeW0zp61sasG0LBwhqbGTRDYjztsaAHLLuN30JsPQmTtrWkETCIUOoLdKisLmnJkN2NaWWYgdZyJZCC4RISYSTzmg19UjI1EA7J4enI1tiAlc1fFWfg9AW8o+VADVS1c0I4Urn1JjJQkpVTAMnKZgnRZgUGiekKKfmdPqoACrUD8sAFqkaXLdXrvtwHhKpeMN23EwTYtyN7dsfFIgR5JpNrTpM2YO5cDZra2owdiEpr2YwHfegqMCKFve1ILUJJLNzLTYShNxrR4kLnUc22FqVTmRkB+2bDXuxwdAQog+4NX999kNw9DHJRNyreLJVJqiSJifXPwNrrv02xMCo87ESQl9xozhSd+yBiduuSzcOODRt6pbyvT+WFxu2Ng51Hd2phWn0HYmW7TAEANXXzuFcCiYwlUkmgTQ+xxP7L7TPKZUluXcUM01LMvGtGwOP2gfnrj/Fi44+yvU10wZF4hqon6Tcq+e3jiCgWtaBVLg233ncXcnjXH2qzygbykjMW9Dexe9fQMIKQkqm9oCo7AtoNkIuSk8jkNjfTWGoQ9QoEmkHxYA/be8JBr/xG47YFoTkwNTSpFIpqirruI3117C326/hu3nTr8XuLu4OIqua+Oyes4EASQCGnpj4xCjoByHirvuJHLqmah0HtwpCLBVZaTmrNvQQd9ADCUlFXaa8gJrZWIJaNaDSE9I0evG3QL0TALo/Y8VwFtf/NxBTKDjPWnTrTs7/cSjeO6h33HKl45o0qQ8WQjxZWBhOBT0aPFxVkMxIQoBEQii1TcO/V307e8SPuEk7PXrxp0wAcfOC06P8PjAUzyTA7dsZTO27eAIQYWTpryAhBQl0KP56JA+hHKLCefPnQmwTAiRngTQ+4+DTOC+zxywN9PqarBsO2fAnUim2Gn+bP52+7X85tpLzKmVpbcC+wkh7vTeFvMZOuFQcFw3Lp1VZmST4YBWWTkko4UQQy0d7Q3rxwVQSDk5Iy3FFmXhioFpi5a5QooKvDJuVVBJpBulj15pIJQiHAowrb4atlw/2I+tBQISf4+GAx3HH30IpjnWjUum0oRDAX5w/uk8+ddfc+j+ey4EDhdCnC2EGFkK0OU3DCLh0LguXFLIcWkE5YBWU4v0kkhHYaurc9yLHnKscV3RLTSqgaqVTS0Ij5yfYcULjoFr0wLEpI5yHKoqSilziwmXTQLoA1uhUCtw1zdOPZapleVDVsiybVJpk4M/tSdP3HcLl13wtb5oOHg5cKgQIltH345gwOdEIyGcPAG8QBGX2vjxgQKtqgo2qVlKv/0m6bffzlvOAOCI/NLFzpazQHP7+geNDRs70TQ3fWh6gQEIXBkrB3BsmymV5ZQUhR0KOIn0Q2SBAPhlzZTyrm+eeTzplEkimWJqZTm/uvJCHvrTDew0f9ajwP5CiEs9+jvb2BgI+M2S4mj+1V25oo1pcueqKRNEKEDgs4ePtpWPPkT7kUdgrVmbM89dAHEheClQmrMr9xYec/sH47S1dyE0SVjZ1BRQFWpmrDJc99dRihnT6tA0rZstW437Pxn6hwE9QogmpdRV3/n6Sdc+99IbFBdFuOr/vkl9TdVq4Brg9xNQrhkAequnVE5R4yR7poQkLjWi2WIuG4y5Mym7+ZZRrRyTzzxN5wnH48STeQUdDQWv+6O85SvKW7PkuauaUkoKIT7IfJ/dsm4jA7E4QtcpctJUb4ZYytYYaeE208pY3gVzpoMrJtkzCaAtN35h6HK/h+688WiU40gp7wB+LISYqGpnEuhuqJs6Jd8mTQZA/dJgqjW2n4+yIHrut0aBB8B8+02cWDKnkMjIz380VEVMaNlrlxRITVI9pQJgQEr5vsHjtTKZuWR5E7ZtI3WdMift9gIqkJuqAV3acJcKRwi28yjsLdiRYhJAQoiUUup0KfgSQjYJIR7fzI+IAx3T66vn5bdAipSQ9Ep9rH/rSfjqI6jrIcO0ceOEJkubZvBksCKn9bEcm8baqRx56CcBHvmAZEIAaFi2Yo0bUwlBg5XEp1ThUNgKeoThUdgOkXCI+tqpHwoC4cNmgRBCdAO3vs//tZRSaxvratD1/BF+Qkh6pDE2BlIgQn60mtosAGob9zsYCp4LltOiB3MqBJmmxeePOJCSonAXcP8HvGS1juOUNq1ZO9QLaJoVR1du7U1B3FNggx4gLjSUbVNcFKauuhI+BBT2h4lE2FJj5dSqMqKRcM7MbAFYCNo1/1gAOSAjUfTp0zAXvYcaGC4WdTrax50oSSF4ODQln8tFNBzilOM/B/CgEKL5A57v9MFEMrxmbRua5jYTbrSSBVfG3aSHsIVwKezyskxLl0kAFeBYNqWynNJxaozc1o+BMW6Owm3iFfvj7XSf/TVUhmRQDk53T17S2VCw1Ajzhq8oZx5c2rTYZ48dWTBnmgn8cQuc78xkypTrNrQjNY2Asqm34gVThZoZzR6FbTtOphNdHwWeRPpxBdDy4mjImVJVnrc2SOAq/mwKMaGB1byangsuAsdBFhW5+EkkcGIDeQEkgcdDlfRLPTc9rhQnHXs4wBuLFi16ZQuc71y3CjUBCILKod5KFgwDlynjXpth4ByHua4OXJv3mARQgY31QPu82dPzZncL3OKu1KbChwJUMuX+Wl4+1MzLicVQg7Gc+XqukKLGU4GKnHs/tm3TUDuFww7cB+Cv22+//ZbIAZu/YlULybSJIwRVdpqSicp1bSUAxYTGukwZtyaZNVzGHZsEUOGNDmDtgu1m5rVAUik6pUGn5ht7gTyQyNKyYcsxOIgTi+XtR/Smv4iVRjhnHVDatDj003tTUhTuAx74oCeqlAoDjSuaWrBtGyUEdXaCoHIKSgeuTxps1HxIpQgG/MxyeyIt/rBMqI8VgLzN1sXz50zP24NVQ9Gl+dio+dFyzDYtk0QKqHgcJ08lqgKeDFaSyiMm7/cZHH/0oQBPCSG2RABdA1SuaGpBSreMu8FKFFwS6Vo9SEJoKOUQCgYzPZEmAVTA4815s6cRCYfzpvQkhWSFEc4Zr8iyYQvkDAxAIp0VQBLo1nRe8pei59h9sWyHWdPr2WvXBQB/3kLnWW87TvGKplY0KdFwW5kU2uRbowdJCYlyHGqmVhIK+hw+JAzcxxVA71WWlTj1tVXj6g6854vmBJDwmmkBqN6enGXcunI/p0UPZG1mDGBZFp89YB8CfmM98OwWOs8Zff2DYmNHF0JKNKWYZsYLLgeuRQ9iI7Btt5VJwB/o40OyiQofso3ULTSafD69d8d5s8veem95Rn8t68qy1IgQk64A/JiGxiMAZPd0512hXgiUkRrRTW9T9y3g93HUZ/cHeEEI0T7itTpgfyB3M9XcXuMXmlvXDwkpBpVNrV14rUwyVai24zCzsRbplmJ9TimVYPOy0RcLIV6ZBND/fqwBmnffaX7ZnX99LOebNOWw0gixQfMz3UxgbXIrRVF02IXr7s46vQUwICWv+Etysm+WbbPdrGnssv0cNZI8UEr5gNsHE6lD+gdiCCE2Cz5KKV5+/V3iiSTS8FFlJShxzIIq404JSYvuMnBC04hEgqzb0F4mNe0WgZgYfBToukZJcaRPKbWfEOK9SQD9b4kEWyn14t577Lir3yMSsk1Ogdst+i1/EbPNBJuWv8nwcAdKp6cnp/u2zAixUs/NvlmWzQH77k4w4NsIPDXipXJg1x9fdxt3//WfBPzGZk/ReCKBoeuYQjDVTlHsWAVFYXdLgy7pMp2az+CWP/yN2+95aLM+J23a7Lrjdtx76+VRPRgsm7RAW2e8OL2h+rz66iqa125A17SsN9hG8JK/lC/ENo5a8YQOIhgcF0Aa8Jq/mJjM3VrS0DU+d+inAJ4VQnSMeKkaKH3j7SVs7OzCb/g2e/ILKZBeM+E6O0lAQbJALJCmYL0eYEBqgMsM9vbHJlyJmzmNZCrFfnvtRCgY7NsW5MPHFUALi6PhgZ0WzImubF6bFUCuBVG86i+hUzMoc8yhFBhhSIRvuG7B6evJeoMtAa/7i3N+Cdu2qauewi7bzwF4YpOXZ/b1x+TGjm58hoGmyVETZ3OZolnWYEHpwEnczeqEkPi85gBSinHPMCM7ljkXTcqRbSC7JgG09eKgdz+97+77/O2Rp3KvkijWagFe9xdzWLzTTYFRuGXcPt/wTe3vzzpBeqTOIl80J/tmWja77zSP0uJIAnhxk5en9/QP0t7ZjZASHcUPelcyy4yPiccmwijMNOMTbpi8NUZawO6pXu7seGuzqGAJxIXkhyVz2aj5EVIwf85McBVMU5MA2jpxkKWUevFTe++6TzgcwrKsnHGQKQSPhyr5TLxz6EmVMlHJRCbad7MQNr3RCtboLgmRs3RbKT7jpu68ncX9mLWurcNtcWkYFDtpDkp0Umun31cyqCUoKArbAWrtFI1WarMso6FglRHA9ATIDV1nzqwGcAvwtrqR/TjuA2XGczMba5g9rS6nXJZ7wxT/9ZeyVve7q40AlXKGCuiUabp62Fnin3d8URJCy+qUOEpRXBRl7913BHh6pP6ZUkriVZI6joMDlDlpipVJUrir9+Y+nAK8ATZuMunmnIcpoFUPuB3+HIey0mKqykthG22+fpwBtNBn6G3777Nb3u4PGoqNmp9nguXoI9a3IfFEM40zODjqSmbin8W+KLlk6m3LZkZjLdMbpipgUxWhsAug1ThemXOjlcBfQGk425K9a9GCpIV0FXwqyigpCsM2UvD52AJICLER+O/hB++HYRjjsj8Ph6YQH5GdbS5207XsDRuw16wZI2OVFIIlRgQtZ/qOzT577Iih6+uAdzd5uRaoaGpeO8SiTTfjOfPyPm6jyfAaOiuHupoqggF/gm3UBkV+zO/FQ3vuMp+G2ql5uzYYyuEtXxGvB4oxPFH55DNPoVIpkv95ErurfxR5pAEbNT8bNH/ORl2alOy31y4A72xCXwPM7B8YDLWsbRtqR1JoDYG31VDAag9ASsG8OTPAlb/qnATQ1h9Ph0OBjgP32z2veH1GrfT+cLVblaqDtWIlqReeI/H4v8e0dNAUNOsh+qSeVSTYcRyKiyLsttN2AC9lOeTsRMoU69o6kFIjpGzq7GTBVZJuC/etX9PchcmNFZk/LIHVPwmgre/GtQIvH/3ZT2Po+XsQ+ZTDM4FylvlC6ICyFP3XX0v6lZfG6MAJoNkIksxRvmA7Do111dROqVDAa1neMre5ZQOD8QRKCEKOTZ2VKCgtt20xNAU90qBD+pGOQ8Dvy3SxW/UBtfMmAfRB3Lj9PrET0xtq8rpxEjf15O/haiQgDEg++QR2R/uYq+gAK/VwzotrWW76iWHoXcCiLG+Zt2xVM6ZpoYSg0jEpLaBK0m1pgTqkjx5pgHIojkaocRV8tln90CSA4F+hgL/zsIP2HbcHkaEUD4emsCZDaee4eraA1Xoody2REOy20zyA5WzSQEopFQUaVjS1YNk2jhDUWwn8BVRJui0na7MRwvQUfEpLolRXlQMsmQTQtnPj1gL/OuGYz3i9g3JPUw3Fes3PXyPVoyjtTS9ov9SHypTHBMFK4ff72H2nBQCvZNn8mwqUrlq9dqiStN5OEFBMAgho0kKego+isb4Gn6HH2YZd7CYtkDvu3nnBLLXL9nPHtUK6Uvw9VM1a3Ze1B71U0CUNeqWR9eI6jkNleSmNdVMA3szylupkyixa2bzW03JzS7E/9gsd7ibqGiMwdB3nzmoE2Og9JgG0DccLuq4tPfELn8UZpwmxhqJFD3BfuMaltLPGSj5PvmrsGyzbYeb0eqLhYCpH/DMznkjKto0dCOEW80234gWZSbC1ATQoJOu1wNDCNcdV8OkCeicBtG3duBhw/xc/dyA1UyvH7eRtoPhLpIZmPTDGlRNAu+4jnYOBcxyH7WY2ZgiEpmwEQnPrBgbiCa+S1KGuANuRbBMASZ0NWgChMgxcPbgMnD0JoG0/7qosK+476jP7D/VazWmFlGKd5ufuSE1WN26DlrtFgxSCnRbMxgNPLCuAPDFEJeSQlpvzMaew3TaQfvqkjnAUgYCfmdNrYWwWxySAtpEVWgE8fOZXPk8kHMorvAguI/fXcDXLfaExrlx7HgBpmsb282YDrBBCWJsQDEGgYXlTC7btYAtBjZ0kWkCVpNtyoq4xgm7/WuVQVlLElMpycJnMSQAVyPjtjvNmmJ/eZzfM8awQig7Nz++j9WNcjU7py/o/jqMoKY5SO7USsivPVAK1S1esRnrqGplK0kkAwRotiCkEju0wvaEGQxNJYPUkgApnvAS8eM6px6Hr2rgJpj7l8HCwilcDRfi8t1q4apvZhm3bTKkso9TNHs5GINQ6SpUvb2pBk24MNcMcZDKHFExcCSz3OjrMaKzDMIxeoGUSQIXjxlnALw/61O7stev2pE1rnIuniEmdW6PTSAuBBNJSMChz1wDVTKkkHA6aZK9f2a63d4COzh5XzwCYbiUmMxC869qsB9GUQkjBLLeLw3q2URLpJIByj0ekEK9868wTJqQ/4FcOzwTLeCxUSUBBGkFCyKwUtlKK2TMbMje+I8vHLWjr6KG7px8hJRHHotpOTgIIV4R+g+Z2cdA1jXluG8il2yoHbhJAua1QEvjF5w79JLvvNJ902hz3fxSCXxc10q7pOIi8Gtizpw8BKFs38dkt69qIDcZBSsoz/UwnGTg2aK6Cj0Dh8xnMdveAlm/z7zYJmazjH7om3/7uN05CCDFuLGQoh6VGhD9F6rwdc5ldaFEIpjfUAKzbtKu4UioA1CxZvhqlFA6CSjtNmW1+7MsYdFwJrJjUUbZNZXkJJcXhSQAVsBUaBK4/+rBPsffuO4y7LwSgK4c7o7W87i9GeDJNm8Y/4WCAqW7yY3OWj4gC9YuXN4FXhVpvJbJmO3wcR4seJI3LwNVVVxEJBqwc13ESQAUy7tOkfPmib56KrunjWiENt9v0jcUziGfpQqeUIhIOUVleAm4B2KajxradstUt65DCjaBmWnHE5H3AAVZrQaS3ENXXTiUQ8McpgDaQkwDKbYVSwDWf+fReziGf3ovUBGIhHcViI0KXNMZUoiqlCIUClJcVQ3bqdU7fQMzY0NaJlG4Z9zQrMQkg3PKQZmO4PMQTUlwH9EwCqLDHQ8C/fvTdrxEJBSckO5tLA045itLiKAGfociePTy7P5agraMLoWlEHZuayTLuEeUh/qHykAXbzQR3GyA+CaDCtkI2cPmuO8yJn/TFw0im3n/bUkepTOpJnOz1+7ObW9YTTyRRQhB1TKqt1CQDp6Ddq0IVXiuYGW4XuxXbQkhxEkCbD6JXgD/98LtnUl8zJa8IY76hlKKqogwpZXzTlVMppQFzF3tCigqodLwk0kkLRLvuHxJSrCgrobKiBLaRDtwkgN7fuLqqomTdReed4jbsfR/rXqaQDhjwHiNHETBt6cpmHEdhC8FMK05QKXTFx/phKDcHzkZgOw4V5SWUlxbDNizjHh33To6JWKFmpdTlZ37lmN/89eEnefblNwn4fZtpgcjc+EHGljFMs227ePWa9UNJpBHHYo0eJP0xd+F8Ct72FbkdGRyH6Q21GLrWTwEwcJMA2oyxYsWKO2bPnn3C1T/69gGHHHcOqXQaKSduwKUUlJYUAcRG6mB7Y3oyZYWaW9e7DYGVwwOhqTwaqppM4wESaPiUQ0Ip5rk6cGvZBq1MJgH0AcacOXNSSqkLd91hzn/OO+P46M9+fjvBgH9i1gfQNUmxm4WdjXqd3TcQo21jp9f8RhFHMIg2eeEzcYajUEplKOxWshcjTgKowF2515RS11zy7VN/8sQzL/PGu0vx+SbQelEpNE0nGg4DZOtIPGt1y3psx2WZxOTuz9gY0mPgZjYWDgM3CaD3N24K+IzP3XTF9/b67InfIj1BV07TJOFwELLvXcR22X4uTz/wG8QkdvK4wZJ5rgVaWCjfaRJAm2+FYkqpb+25y/ynLjj7pMil1/52XFdO4YrJh0MByK4gc2Uo6Fuz0/yZFUwWn44XEq0C7p8E0IcbRAuVUldceN4pVz3/8ps89cJr+Vk5BUJKAn4/QDLL57UDN01e2Q9pfDY5Nn+sWLHiJl2Tj/3yyoupqarAyivIqNCkwO+CrH/y6k0C6GM/5syZkwLOmzmtZs21l50/bt2QEAK/SzjYk1dvEkCTwwXFauD844480Dz3tC/lzZUTQqBpGpMxziSAJsdoYPwDuPKKS87m4E/umRNEAoHmsnWTAJoE0OTYZPzMZ+iP3HbD/zGjsTarjoKQIkN3xycv1ySAJsdoK5QCvl5XXfne72/8EdFICDtL1ra3x2NOXrFJAE2OsSBaD5y57x47dF976fmAu3s+cnh/GZNXaxJAkyM7iF4BvnHq8UeY3z/nZNJpc4iZcxwHy7IBQpNXahJAkyM3iO4HfnjpBWdy8nFHkEymhgCUcH+ftECTAJoc44xrhBC/uOXqizn8oP1IJFPYjkMsNghQNnl5JsfkGGcopfxKqT939w6o/Y76mjLq9lbPvfyWUkrdNnl1JsfkmBiIipRSj29o71I7HfBl9ZeHnlJKqYcmr8zkmBwTB1GlUurFVWvWq2WrWpVS6k+TV2VyTI7NA1GDUupxpdTidDr9qckrMjkmx+aDyFBKRSevxOSYHJNjckyOyTE5JsfkmBzbdPx/mmM3V0hfe8gAAAAASUVORK5CYII=";
+const ROSTER_RAW = [
+ [2,"Bridges, Christan","OF","5'10",170,"L/L","RSO","Southaven, MS / Southaven HS","Miss. Delta CC"],
+ [3,"Gunn, Tre","OF","6'1",205,"R/R","RSO","Rienzi, MS / Biggersville",""],
+ [4,"Thompson, Brody","OF / RHP","6'0",185,"R/R","SO","Mantachie, MS / Mooreville HS",""],
+ [5,"White, Brady","RHP / OF","6'3",195,"R/R","RFR","Vardaman, MS / Vardaman HS",""],
+ [6,"Cummings, Jack","C","6'0",165,"R/R","SO","Pontotoc, MS / North Pontotoc",""],
+ [7,"Graham, Cannon","IF","6'0",185,"L/R","RSO","Bailey, MS / West Lauderdale","Pearl River CC"],
+ [8,"Dunn, Tayte","C","6'2",195,"R/R","FR","Tuscaloosa, AL / Bob Jones HS",""],
+ [9,"Wilbanks, Ayden","RHP / IF","6'0",175,"L/R","FR","Walnut, MS / Kossuth HS",""],
+ [10,"Henriquez, Edward","IF","6'1",190,"R/R","RFR","Baton Rouge, LA / Catholic HS","Alvin CC"],
+ [11,"Gray, Parker","IF","5'11",175,"R/R","FR","Corinth, MS / Corinth HS",""],
+ [12,"Whitfield, Daniel","OF","6'1",170,"S/S","SO","Blue Springs, MS / East Union",""],
+ [13,"Mitchell, Grady","OF","6'0",200,"L/R","FR","Corinth, MS / Corinth HS",""],
+ [14,"Bryant, Tre","IF","6'1",215,"R/R","RFR","Brandon, MS / Jackson Prep","University of California, Berkeley"],
+ [15,"Morrison, Jon Grey","RHP / IF","6'6",230,"R/R","FR","Etta, MS / West Union Attendance Center",""],
+ [16,"Edge, Connor","RHP","6'0",200,"R/R","SO","Hernando, MS / Magnolia Heights",""],
+ [17,"Gatlin, Barron","RHP","6'3",190,"R/R","FR","Tuscaloosa, AL / Northridge HS",""],
+ [18,"Stiles, Connor","RHP","6'2",210,"R/R","FR","Athens, AL / Hartselle HS",""],
+ [19,"Brazeal, Reece","RHP","6'5",195,"R/R","FR","Madison, AL / Bob Jones HS",""],
+ [20,"Smith, Sean","C","6'0",190,"S/R","FR","Prattville, AL / Prattville HS",""],
+ [21,"Sowell, Preston","RHP / IF","6'2",205,"R/R","RFR","Olive Branch, MS / Magnolia Heights","Northwest MS CC"],
+ [22,"Howell, Jack","LHP","6'2",175,"L/L","SO","Amory, MS / Amory",""],
+ [23,"Swanson, Gunnar","OF","6'0",175,"L/R","FR","Madison, MS / Madison Ridgeland Academy",""],
+ [25,"Pickens, Tyler","OF","6'4",225,"R/R","RSO","Chesterville, MS / North Pontotoc",""],
+ [26,"Waldrip, Collin","IF","6'2",185,"R/R","FR","Oxford, MS / Lafayette HS",""],
+ [27,"Caviness, Will","IF","6'1",200,"R/R","SO","Ripley, MS / Ripley HS",""],
+ [29,"Cutler, Charlie","RHP / IF","6'6",255,"R/R","FR","Montgomery, AL / Saint James School",""],
+ [30,"Summers, Evan","LHP / OF","6'0",210,"L/L","FR","Mantachie, MS / Itawamba AHS",""],
+ [31,"Anderson, Davis","RHP","6'2",205,"R/R","FR","Hernando, MS / Lausanne Collegiate School",""],
+ [32,"Carnathan, Cody","RHP","6'2",165,"R/R","FR","Saltillo, MS / Saltillo HS",""],
+ [33,"Bennett, Kadin","OF / RHP","6'0",180,"R/R","FR","Tupelo, MS / Tupelo HS",""],
+ [34,"Crawley, Brooks","OF","6'2",200,"S/R","FR","Flowood, MS / Northwest Rankin HS",""],
+ [35,"Goodson, Will","LHP","6'2",195,"L/L","FR","Saltillo, MS / Saltillo HS",""],
+ [36,"Strong, Aidan","RHP","6'3",190,"R/R","FR","Fulton, MS / Itawamba AHS",""]
+];
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const pretty = n => { const [l, f] = String(n).split(", "); return f ? `${f} ${l}` : n; };
+const uid = () => Math.random().toString(36).slice(2, 9);
+const pad = n => String(n).padStart(2, "0");
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const fromIso = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (s, n) => { const d = fromIso(s); d.setDate(d.getDate() + n); return iso(d); };
+const todayIso = () => iso(new Date());
+const fmtDate = (s, o = {weekday: "long", month: "short", day: "numeric"}) => fromIso(s).toLocaleDateString("en-US", o);
+const LIFTS = [["bench", "Bench Press"], ["squat", "Squat"], ["deadlift", "Deadlift"]];
+const LIFT_NAME = Object.fromEntries(LIFTS);
+/* extra maxes kept on the profile but left out of totals and leaderboards */
+const MAXES = [...LIFTS, ["db", "DB Bench (per dumbbell)"]];
+const MAX_NAME = Object.fromEntries(MAXES);
+/* converted maxes: dumbbell work is figured from a share of the barbell max */
+const CONV = {dbbench: {name: "DB Bench (per dumbbell)", from: "bench", def: 40}};
+const BASES = [...LIFTS, ...Object.entries(CONV).map(([k, c]) => [k, c.name])];
+const isDbBench = n => /bench/i.test(n) && /\b(sa|single[\s-]?arm|one[\s-]?arm|1[\s-]?arm|db|dbs|dumbbells?)\b/i.test(n);
+const basisOf = it => !it ? "" : it.basis === "bench" && isDbBench(it.name || "") ? "dbbench" : (it.basis || "");
+const convPct = b => { const v = Number(S.config.conv?.[b]); return v > 0 ? v : CONV[b].def; };
+const rootLift = b => CONV[b] ? CONV[b].from : b;
+
+const ROSTER_BASE = ROSTER_RAW.map(([no, name, pos, ht, wt, bt, cl]) => ({no, name, pos, ht, wt, cl, key: slug(name)}));
+let ROSTER = ROSTER_BASE.slice();
+
+/* ---------- state ---------- */
+const S = {
+  view: "home", date: todayIso(), month: todayIso().slice(0, 7), player: null, ptab: "maxes", lb: "total", q: "",
+  days: {}, athletes: {}, programs: {}, config: {}, dayLogs: {}, playerLogs: {}, myLogs: {},
+  me: null, viewAs: null, coachHash: null, canEdit: null, isOwner: false, mode: "local", offline: false,
+  upload: null, maxDocs: {}
+};
+try { const t = localStorage.getItem("icc-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+/* identity comes from the login: is_coach() and my_player_key() in the database */
+const isCoach = () => S.coach === true;
+const player = k => ROSTER.find(p => p.key === k);
+/* maxes live in their own coach-only collection; weigh-ins stay on the athlete doc players can write */
+const ath = k => { const a = S.athletes[k] || {}, m = S.maxDocs[k] || {}; return {...a, maxes: m.maxes || {}, maxDates: m.maxDates || {}, maxHistory: m.maxHistory || []}; };
+const GROUP_NAME = {hitters: "Hitters", pitchers: "Pitchers"};
+const posGroup = pos => /^(r|l)?hp$|^p$/i.test(String(pos || "").split("/")[0].trim()) ? "pitchers" : "hitters";
+const groupOf = k => { const g = (S.maxDocs[k] || {}).liftGroup; if (GROUP_NAME[g]) return g; const p = player(k); return posGroup(p && p.pos); };
+const sheetGroup = sn => { const t = String(sn).toLowerCase(); if (/pitch|\barms?\b|mound|\bp\b|bullpen/.test(t)) return "pitchers"; if (/hitter|position|batter|fielder|\bpos\b|offense|\bhit/.test(t)) return "hitters"; return null; };
+const maxOf = (k, lift) => { const v = Number(ath(k).maxes?.[lift]); return v > 0 ? v : null; };
+const total = k => { const m = LIFTS.map(([l]) => maxOf(k, l)); return m.every(v => v) ? m.reduce((a, b) => a + b, 0) : null; };
+const bw = k => { const w = (ath(k).weighIns || []).slice().sort((a, b) => a.d < b.d ? 1 : -1)[0]; return w ? Number(w.w) : null; };
+const roundInc = () => Number(S.config.round) || 5;
+const target = (k, basis, pct) => { if (!basis || pct == null) return null; if (basis === "dbbench") { const dm = maxOf(k, "db"); if (dm) { const r = roundInc(); return Math.round(dm * pct / r) * r; } } const c = CONV[basis]; const m = maxOf(k, c ? c.from : basis); if (!m) return null; const r = roundInc(); return Math.round(m * (c ? convPct(basis) / 100 : 1) * pct / r) * r; };
+function applyRosterConfig() {
+  const ex = S.config.roster || {};
+  const rm = new Set(ex.removed || []);
+  ROSTER = [...ROSTER_BASE.filter(p => !rm.has(p.key)), ...(ex.added || [])].sort((a, b) => a.no - b.no);
+}
+/* ---------- roster editing (coaches) ---------- */
+function rosterCfg() { const r = S.config.roster || {}; return {added: (r.added || []).slice(), removed: (r.removed || []).slice()}; }
+function saveRoster(r) { const prev = rosterCfg(); S.config = {...S.config, roster: r}; write("config/team", S.config); applyRosterConfig(); syncPlayers(prev, r); render(); }
+function addPlayerModal() {
+  const removed = ROSTER_BASE.filter(p => rosterCfg().removed.includes(p.key));
+  openModal("Add a player", `<label class="f" for="apFirst">First name</label><input class="inp" id="apFirst" autocomplete="off">
+    <label class="f" for="apLast">Last name</label><input class="inp" id="apLast" autocomplete="off">
+    <label class="f" for="apNo">Jersey number</label><input class="inp" id="apNo" type="number" inputmode="numeric" min="0" max="99">
+    <label class="f" for="apPos">Position</label><input class="inp" id="apPos" placeholder="RHP, OF, C / 1B" autocomplete="off">
+    <label class="f" for="apCl">Class</label><select class="inp" id="apCl">${["", "FR", "RFR", "SO", "RSO"].map(c => `<option value="${c}">${c || "Choose"}</option>`).join("")}</select>
+    <div class="row" style="margin-top:16px"><button class="btn" id="apSave">Add to roster</button></div>
+    ${removed.length ? `<h3 style="margin-top:22px">Removed players</h3><p class="sub">Adding one back brings back his maxes, weigh-ins and workout history.</p><ul class="plist">${removed.map(p => `<li><button class="pick" data-restore="${p.key}">#${p.no} ${esc(pretty(p.name))} <span class="sub">Add back</span></button></li>`).join("")}</ul>` : ""}`, sh => {
+    $("#apSave", sh).onclick = () => {
+      const f = $("#apFirst", sh).value.trim(), l = $("#apLast", sh).value.trim(), no = parseInt($("#apNo", sh).value, 10), pos = $("#apPos", sh).value.trim().toUpperCase(), cl = $("#apCl", sh).value;
+      if (!f || !l) { toast("Enter a first and last name."); return; }
+      if (!(no >= 0 && no <= 99)) { toast("Enter a jersey number from 0 to 99."); return; }
+      const name = `${l}, ${f}`, key = slug(name), r = rosterCfg();
+      if (player(key)) { toast(`${f} ${l} is already on the roster.`); return; }
+      if (ROSTER.some(p => p.no === no)) { toast(`#${no} is already taken.`); return; }
+      if (ROSTER_BASE.some(p => p.key === key)) r.removed = r.removed.filter(x => x !== key);
+      else r.added = [...r.added.filter(p => p.key !== key), {no, name, pos, ht: "", wt: "", cl, key}];
+      closeModal(); saveRoster(r); toast(`${f} ${l} added`);
+    };
+    $$("[data-restore]", sh).forEach(b => b.onclick = () => { const r = rosterCfg(), k = b.dataset.restore; r.removed = r.removed.filter(x => x !== k); closeModal(); saveRoster(r); toast(`${pretty(ROSTER_BASE.find(p => p.key === k).name)} is back on the roster`); });
+  });
+}
+function removePlayer(k) {
+  const p = player(k); if (!p) return;
+  askConfirm(`Remove ${pretty(p.name)} from the roster? His maxes, weigh-ins and workout history are kept, so adding him back brings it all back.`, "Remove from roster", () => {
+    const r = rosterCfg();
+    if (ROSTER_BASE.some(x => x.key === k)) r.removed = [...new Set([...r.removed, k])]; else r.added = r.added.filter(x => x.key !== k);
+    if (S.viewAs === k) S.viewAs = null;
+    saveRoster(r); toast(`${pretty(p.name)} removed from the roster`); if (location.hash !== "#roster") location.hash = "roster";
+  });
+}
+
+/* ---------- storage: Supabase (table app_docs, app = 'weightroom') ---------- */
+const APP = "weightroom";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {auth: {persistSession: true, autoRefreshToken: true, detectSessionInUrl: true}});
+const store = {
+  watchers: new Set(), channel: null, started: false, subscribedOnce: false,
+  loadLocal() {},
+  conds(where) { return !where ? [] : Array.isArray(where[0]) ? where : [where]; },
+  match(v, conds) {
+    return conds.every(([f, op, x]) => { const y = v ? v[f] : undefined;
+      return op === "==" ? y === x : op === ">=" ? y >= x : op === "<=" ? y <= x : op === ">" ? y > x : op === "<" ? y < x : true; });
+  },
+  async fetch(w) {
+    const out = {}, size = 1000;
+    for (let from = 0; ; from += size) {
+      let q = sb.from("app_docs").select("doc_id,data").eq("app", APP).eq("coll", w.coll);
+      for (const [f, op, x] of w.conds) {
+        const col = f === "player" ? "owner_key" : "data->>" + f;
+        q = op === "==" ? q.eq(col, x) : op === ">=" ? q.gte(col, x) : op === "<=" ? q.lte(col, x) : op === ">" ? q.gt(col, x) : op === "<" ? q.lt(col, x) : q;
+      }
+      const {data, error} = await q.order("doc_id").range(from, from + size - 1);
+      if (error) throw error;
+      for (const r of data) out[r.doc_id] = r.data;
+      if (data.length < size) break;
+    }
+    return out;
+  },
+  async refresh(w) {
+    try { const docs = await this.fetch(w); if (!this.watchers.has(w)) return; w.docs = docs; w.cb({...docs}, false); }
+    catch (e) { console.error(e); }
+  },
+  refreshAll() { this.watchers.forEach(w => this.refresh(w)); },
+  watch(coll, where, cb) {
+    const w = {coll, conds: this.conds(where), cb, docs: {}};
+    this.watchers.add(w); this.refresh(w);
+    return () => { this.watchers.delete(w); };
+  },
+  onChange(p) {
+    const row = p.new && p.new.coll ? p.new : null, old = p.old || {};
+    if ((row && row.app !== APP) || (!row && old.app && old.app !== APP)) return;
+    for (const w of this.watchers) {
+      if (p.eventType === "DELETE") {
+        if (w.coll === old.coll && old.doc_id in w.docs) { delete w.docs[old.doc_id]; w.cb({...w.docs}, false); }
+      } else if (row && w.coll === row.coll) {
+        if (this.match(row.data, w.conds)) w.docs[row.doc_id] = row.data;
+        else if (row.doc_id in w.docs) delete w.docs[row.doc_id];
+        else continue;
+        w.cb({...w.docs}, false);
+      }
+    }
+  },
+  start() {
+    if (this.started) return; this.started = true;
+    this.channel = sb.channel("weightroom-docs")
+      .on("postgres_changes", {event: "*", schema: "public", table: "app_docs"}, p => this.onChange(p))
+      .subscribe(status => {
+        if (status === "SUBSCRIBED") { if (this.subscribedOnce) this.refreshAll(); this.subscribedOnce = true; }
+      });
+    /* phones sleep and drop the live connection: catch up whenever the app comes back */
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") this.refreshAll(); });
+    window.addEventListener("online", () => this.refreshAll());
+  },
+  async set(path, data) {
+    const i = path.indexOf("/"), coll = path.slice(0, i), doc_id = path.slice(i + 1);
+    const {error} = await sb.from("app_docs").upsert({app: APP, coll, doc_id, data}, {onConflict: "app,coll,doc_id"});
+    if (error) throw error;
+  },
+  async del(path) {
+    const i = path.indexOf("/"), coll = path.slice(0, i), doc_id = path.slice(i + 1);
+    const {error} = await sb.from("app_docs").delete().eq("app", APP).eq("coll", coll).eq("doc_id", doc_id);
+    if (error) throw error;
+  }
+};
+/* one write at a time per document, latest wins */
+const pending = {}, inflight = {};
+function write(path, data) { pending[path] = JSON.parse(JSON.stringify(data)); if (!inflight[path]) flush(path); }
+async function flush(path) {
+  inflight[path] = true;
+  while (pending[path]) {
+    const d = pending[path]; delete pending[path];
+    try { await store.set(path, d); }
+    catch (e) {
+      console.error(e);
+      if (e && (e.code === "42501" || /row-level security/i.test(e.message || ""))) toast("You don't have permission to save this.");
+      else toast("Couldn't save. Check your connection and try again.");
+    }
+  }
+  inflight[path] = false;
+}
+
+/* ---------- subscriptions ---------- */
+let unsubDayLogs = null, unsubPlayerLogs = null, unsubMyLogs = null, subDate = null, subPlayer = null, subMe = null;
+function subDayLogs() {
+  if (subDate === S.date) return; subDate = S.date;
+  unsubDayLogs && unsubDayLogs();
+  unsubDayLogs = store.watch("logs", ["date", "==", S.date], d => { S.dayLogs = d; schedule(); });
+}
+function subPlayerLogs() {
+  const k = S.player; if (!k || subPlayer === k) return; subPlayer = k;
+  unsubPlayerLogs && unsubPlayerLogs();
+  unsubPlayerLogs = store.watch("logs", ["player", "==", k], d => { S.playerLogs = d; schedule(); });
+}
+function subMyLogs() {
+  if (!S.me || subMe === S.me) return; subMe = S.me;
+  unsubMyLogs && unsubMyLogs();
+  unsubMyLogs = store.watch("logs", ["player", "==", S.me], d => { S.myLogs = d; schedule(); });
+}
+function startSubs() {
+  let loaded = false;
+  const timer = setTimeout(() => { if (!loaded) { S.offline = true; schedule(); } }, 10000);
+  store.watch("days", null, (d, cache) => { S.days = d; if (!cache) { loaded = true; clearTimeout(timer); S.offline = false; } schedule(); });
+  store.watch("athletes", null, d => { S.athletes = d; schedule(); });
+  store.watch("maxes", null, d => { S.maxDocs = d; schedule(); });
+  store.watch("programs", null, d => { S.programs = d; schedule(); });
+  store.watch("config", null, d => { S.config = d.team || {}; applyRosterConfig(); schedule(); });
+  subDayLogs(); subMyLogs();
+}
+
+/* ---------- render scheduling (don't clobber typing) ---------- */
+let needRender = false;
+function typing() { const a = document.activeElement; return a && $("#app").contains(a) && /INPUT|TEXTAREA|SELECT/.test(a.tagName); }
+function schedule() { if (typing()) { needRender = true; return; } render(); }
+document.addEventListener("focusout", () => setTimeout(() => { if (needRender && !typing()) { needRender = false; render(); } }, 50));
+
+function toast(msg) {
+  const t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3200);
+}
+
+/* ---------- workouts & logs ---------- */
+const dayWorkouts = date => (S.days[date]?.workouts) || [];
+const taskList = date => dayWorkouts(date).flatMap(w => (w.items || []).map(it => ({w, it, id: w.id + ":" + it.id})));
+const logId = (date, k) => `${date}__${k}`;
+function logFor(date, k) {
+  return (S.dayLogs[logId(date, k)] && date === S.date ? S.dayLogs[logId(date, k)] : null)
+    || S.playerLogs[logId(date, k)] || S.myLogs[logId(date, k)] || (S.monthLogs || {})[logId(date, k)] || {date, player: k, items: {}};
+}
+function progress(date, k) {
+  const tasks = playerTasks(date, k); const lg = logFor(date, k);
+  const done = tasks.filter(t => lg.items?.[t.id]?.done).length;
+  return {done, total: tasks.length};
+}
+function saveLog(date, k, mut) {
+  const lg = JSON.parse(JSON.stringify(logFor(date, k)));
+  lg.items = lg.items || {}; mut(lg); lg.date = date; lg.player = k; lg.updatedAt = new Date().toISOString();
+  const id = logId(date, k);
+  if (date === S.date) S.dayLogs[id] = lg;
+  if (k === S.me) S.myLogs[id] = lg;
+  if (k === S.player) S.playerLogs[id] = lg;
+  write("logs/" + id, lg);
+}
+const canEditPlayer = k => isCoach() || k === S.me;
+
+/* ---------- scheme parsing (shared by Excel import & editor) ---------- */
+function normPct(v) {
+  if (v === "" || v == null) return null;
+  if (typeof v === "number") return v <= 1.5 ? v : v / 100;
+  const s = String(v), m = s.match(/\d+(\.\d+)?/); if (!m) return null;
+  const n = parseFloat(m[0]); return /%/.test(s) ? n / 100 : (n <= 1.5 ? n : n / 100);
+}
+function parseOne(str) {
+  let s = String(str).trim(); if (!s) return null;
+  let pct = null, load = null;
+  const pm = s.match(/(\d+(?:\.\d+)?)\s*%/); if (pm) { pct = parseFloat(pm[1]) / 100; s = s.replace(pm[0], " "); }
+  const lm = s.match(/(\d+(?:\.\d+)?)\s*(lbs?|#)/i); if (lm) { load = parseFloat(lm[1]); s = s.replace(lm[0], " "); }
+  s = s.replace(/@/g, " ");
+  const sx = s.match(/(\d+)\s*[x×X*]\s*(\d+\+?(?:\s*-\s*\d+)?|max|amrap)/i);
+  if (sx) return Array.from({length: Math.min(+sx[1], 20)}, () => ({reps: sx[2].replace(/\s/g, ""), pct, load}));
+  const r = s.match(/\d+\+?(?:\s*-\s*\d+)?|amrap|max/i);
+  if (r || pct != null || load != null) return [{reps: r ? r[0].replace(/\s/g, "") : "", pct, load}];
+  return null;
+}
+function parseScheme(str) {
+  const parts = String(str ?? "").split(/\s*[,;]\s*/).filter(Boolean);
+  const out = []; for (const p of parts) { const r = parseOne(p); if (r) out.push(...r); }
+  return out;
+}
+function schemeText(sets) {
+  const out = []; let i = 0;
+  while (i < sets.length) {
+    let j = i; const a = sets[i];
+    while (j + 1 < sets.length && sets[j + 1].reps == a.reps && sets[j + 1].pct == a.pct && sets[j + 1].load == a.load) j++;
+    const n = j - i + 1;
+    let t = (n > 1 ? `${n}x` : "") + (a.reps || "");
+    if (a.pct != null) t += ` @ ${+(a.pct * 100).toFixed(1)}%`;
+    else if (a.load != null) t += ` @ ${a.load}lb`;
+    out.push(t.trim()); i = j + 1;
+  }
+  return out.join(", ");
+}
+function guessBasis(name) {
+  const n = String(name).toLowerCase();
+  if (isDbBench(n)) return "dbbench";
+  if (/bench/.test(n) && !/jump|step|dip/.test(n)) return "bench";
+  if (/dead\s*-?lift|\bdl\b|rdl/.test(n)) return "deadlift";
+  if (/squat/.test(n) && !/split|goblet|bulgarian|jump|wall|pistol|cossack|lunge|sissy/.test(n)) return "squat";
+  return "";
+}
+
+/* ---------- Excel import ---------- */
+const HDR = {
+  ex: /exercise|movement|^lifts?\b|^lift name|^name$/i, day: /^(day|session|workout)\b/i, week: /^(week|wk)\b/i,
+  sets: /^(#\s*)?sets$|no\.? of sets|^sets\b/i, setno: /^set\s*(#|no\.?)?$/i, reps: /^reps?\b|repetitions/i,
+  pct: /%|percent|intensity|^pct/i, load: /weight|load|lbs?\b/i, notes: /note|comment|cue|tempo|coach/i
+};
+const DAYLABEL = /^(day\s*\d+|week\s*\d+|wk\s*\d+|mon|tue|wed|thu|fri|sat|sun|lower|upper|total body|full body|session\s*\d+|lift\s*\d+|workout\s*\d+)/i;
+function mapHeader(row) {
+  const m = {setCols: []}; let hits = 0;
+  row.forEach((c, i) => {
+    const h = String(c).trim(); if (!h) return;
+    const sn = h.match(/set\s*(\d+)|(?:rep|reps|%|pct|weight|load)\s*(\d+)/i);
+    if (sn) { const n = +(sn[1] || sn[2]); const type = /%|pct|percent|intens/i.test(h) ? "pct" : /rep/i.test(h) ? "reps" : /weight|load|lb/i.test(h) ? "load" : "cell"; m.setCols.push({i, n, type}); hits++; return; }
+    for (const k of ["ex", "week", "day", "setno", "sets", "reps", "pct", "load", "notes"]) {
+      if (m[k] == null && HDR[k].test(h)) { m[k] = i; hits++; return; }
+    }
+  });
+  return m.ex != null && hits >= 2 ? m : null;
+}
+function rowSets(row, m) {
+  if (m.setCols.length) {
+    const by = {};
+    for (const c of m.setCols) { const v = row[c.i]; if (v === "" || v == null) continue; (by[c.n] = by[c.n] || {})[c.type] = v; }
+    const out = [];
+    for (const n of Object.keys(by).map(Number).sort((a, b) => a - b)) {
+      const g = by[n];
+      if (g.cell != null) { out.push(...(typeof g.cell === "number" ? [{reps: String(g.cell), pct: null, load: null}] : parseScheme(g.cell))); continue; }
+      out.push({reps: g.reps != null ? String(g.reps) : "", pct: normPct(g.pct), load: g.load != null && g.load !== "" ? Number(g.load) || null : null});
+    }
+    return out;
+  }
+  const get = k => m[k] != null ? row[m[k]] : "";
+  let n = parseInt(get("sets")) || 0, repsV = get("reps"), pctV = get("pct"), loadV = get("load");
+  if (typeof repsV === "string") {
+    const sx = repsV.match(/^\s*(\d+)\s*[x×X]\s*(\d+(?:-\d+)?)\s*$/);
+    if (sx && !n) { n = +sx[1]; repsV = sx[2]; }
+    else if (/%|@/.test(repsV)) return parseScheme(repsV);
+  }
+  const reps = repsV === "" ? [] : typeof repsV === "number" ? [String(repsV)] : String(repsV).split(/\s*[,/;|]\s*/).filter(Boolean);
+  const pcts = pctV === "" ? [] : typeof pctV === "number" ? [normPct(pctV)] : String(pctV).split(/\s*[,/;|]\s*|\s*[-–]\s*(?=\d)/).filter(Boolean).map(normPct);
+  const loads = loadV === "" ? [] : typeof loadV === "number" ? [loadV] : String(loadV).split(/\s*[,/;|]\s*/).map(x => parseFloat(x)).filter(x => !isNaN(x));
+  const len = Math.max(n, reps.length, pcts.length, loads.length, (repsV !== "" || pctV !== "") ? 1 : 0);
+  const pick = (a, i) => a.length ? (a[i] ?? a[a.length - 1]) : null;
+  return Array.from({length: Math.min(len, 20)}, (_, i) => ({reps: pick(reps, i) ?? "", pct: pick(pcts, i), load: pick(loads, i)}));
+}
+/* Grid layout (ICC sheets): one tab per player, weeks side by side (label | wt | · | reps),
+   blocks in column A, exercise + cues in column B, warm-up list at the bottom. */
+function cellLoad(v) {
+  if (v === "" || v == null) return {};
+  if (typeof v === "number") return v <= 1.5 ? {pct: v} : {load: v};
+  const t = String(v).trim();
+  if (!t || /^[?\-–]+$/.test(t)) return {};
+  if (/%/.test(t)) return {pct: normPct(t)};
+  if (/^\d+(\.\d+)?$/.test(t)) return {load: +t};
+  return {text: t};
+}
+function parseWeekGrid(rows, sn, sheetIdx) {
+  const isWeek = c => typeof c === "string" && /^\s*week\s*\d+\s*$/i.test(c);
+  const isSub = c => /^(reps?|wt|weight|load|lbs?|sets|%)$/i.test(String(c ?? "").trim());
+  const heads = [];
+  rows.forEach((r, i) => {
+    const w = (r || []).map((c, j) => isWeek(c) ? j : -1).filter(j => j >= 0);
+    if (w.some((c, k) => k && c - w[k - 1] < 2)) return;
+    if (w.length >= 2 || (w.length === 1 && rows.slice(i + 1, i + 4).some(rr => (rr || []).some(isSub)))) heads.push({i, cols: w});
+  });
+  if (!heads.length) return null;
+  const out = [];
+  const SCHEME = /^\d+(\s*-\s*\d+)?\s*[x×]\s*\S/i;
+  heads.forEach((h, hi) => {
+    const end = hi + 1 < heads.length ? heads[hi + 1].i : rows.length;
+    const hr = rows[h.i];
+    const dayRe = /^\s*day\s*\d+/i;
+    const dayCell = hr.find(c => typeof c === "string" && dayRe.test(c)) || rows.slice(Math.max(0, h.i - 2), h.i).flat().find(c => typeof c === "string" && dayRe.test(c));
+    const dayLabel = dayCell ? String(dayCell).trim() : sn;
+    const dayNum = dayCell ? +String(dayCell).match(/\d+/)[0] : sheetIdx + 1;
+    const weeks = h.cols.map((c, k) => ({label: "Week " + String(hr[c]).match(/\d+/)[0], n: +String(hr[c]).match(/\d+/)[0], start: c, end: k + 1 < h.cols.length ? h.cols[k + 1] : Infinity}));
+    let dataStart = h.i + 1;
+    for (let r = h.i + 1; r < Math.min(end, h.i + 4); r++) {
+      let found = false;
+      (rows[r] || []).forEach((c, j) => {
+        const t = String(c ?? "").trim().toLowerCase(); const wk = weeks.find(w => j >= w.start && j < w.end); if (!wk) return;
+        if (/^reps?$/.test(t)) { wk.reps = j; found = true; } else if (isSub(t)) { wk.wt = j; found = true; }
+      });
+      if (found) dataStart = r + 1;
+    }
+    weeks.forEach(w => { if (w.end === Infinity) w.end = w.reps != null ? w.reps + 1 : w.start + 4; });
+    const lastCol = weeks[weeks.length - 1].end;
+    let wuRow = -1;
+    for (let r = dataStart; r < end && wuRow < 0; r++) if ((rows[r] || []).slice(0, lastCol).some(c => /^\s*warm\s*-?\s*up\s*$/i.test(String(c ?? "")))) wuRow = r;
+    const exEnd = wuRow >= 0 ? wuRow : end;
+    const first = weeks[0].start, counts = {};
+    for (let r = dataStart; r < exEnd; r++) (rows[r] || []).forEach((c, j) => { if (j < first && typeof c === "string" && c.trim() && !/block/i.test(c)) counts[j] = (counts[j] || 0) + 1; });
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+    if (!top) return;
+    const nameCol = +top[0];
+    const exs = []; let block = "", cur = null, prevBlank = true;
+    for (let r = h.i + 1; r < dataStart; r++) for (let j = 0; j < first; j++) { const m = String((rows[r] || [])[j] ?? "").match(/^\s*([A-Z])\s*-?\s*block/i); if (m) block = m[1].toUpperCase(); }
+    for (let r = dataStart; r < exEnd; r++) {
+      const row = rows[r] || [];
+      for (let j = 0; j < first; j++) { if (j === nameCol) continue; const m = String(row[j] ?? "").match(/^\s*([A-Z])\s*-?\s*block/i); if (m) { block = m[1].toUpperCase(); cur = null; prevBlank = true; } }
+      const name = String(row[nameCol] ?? "").trim();
+      const wc = weeks.map(w => {
+        const o = {label: "", reps: "", wt: "", scheme: ""};
+        for (let j = w.start; j < w.end; j++) {
+          const v = row[j]; if (v === "" || v == null) continue; const t = String(v).trim(); if (!t) continue;
+          if (SCHEME.test(t)) o.scheme = o.scheme ? o.scheme + ", " + t : t;
+          else if ((j === w.reps || /^x\s*\d/i.test(t)) && /^x?\s*\d/i.test(t)) o.reps = t.replace(/^x\s*/i, "");
+          else if (j === w.wt) o.wt = v;
+          else if (!/^[%?]$/.test(t)) o.label = o.label ? o.label + " " + t : t;
+        }
+        return o;
+      });
+      const hasScheme = wc.some(o => o.scheme), hasData = wc.some(o => o.scheme || o.reps || o.label || o.wt !== "");
+      if (name) {
+        const startNew = !cur || prevBlank || (hasScheme && cur.weeks.some((wk, k) => (wc[k].scheme && wk.scheme) || wk.sets.length));
+        if (startNew) { cur = {row: r, name, block, notes: [], weeks: weeks.map(() => ({scheme: "", schemeLoad: {}, sets: [], notes: []}))}; exs.push(cur); }
+        else cur.notes.push(name);
+      }
+      prevBlank = !name && !hasData;
+      if (!cur || !hasData) continue;
+      wc.forEach((o, k) => {
+        const wk = cur.weeks[k];
+        if (o.scheme) { wk.scheme = wk.scheme ? wk.scheme + ", " + o.scheme : o.scheme; if (o.wt !== "") wk.schemeLoad = cellLoad(o.wt); if (o.label) wk.notes.push(o.label); return; }
+        if (o.reps || o.wt !== "") { const L = cellLoad(o.wt); wk.sets.push({reps: o.reps, pct: L.pct ?? null, load: L.load ?? null, text: L.text || "", note: o.label}); }
+        else if (o.label) {
+          const last = wk.sets[wk.sets.length - 1];
+          if (last && !last.note) last.note = o.label; else wk.notes.push(o.label);
+        }
+      });
+    }
+    let warm = "";
+    if (wuRow >= 0) {
+      const cols = {};
+      for (let r = wuRow + 1; r < end; r++) (rows[r] || []).slice(0, lastCol).forEach((c, j) => { const t = String(c ?? "").trim(); if (t && !/^warm\s*-?\s*up$/i.test(t)) (cols[j] = cols[j] || []).push(t); });
+      warm = Object.keys(cols).map(Number).sort((a, b) => a - b).map(j => cols[j].join("\n")).join("\n\n");
+    }
+    const schemeSets = str => {
+      const res = [];
+      for (const part of String(str).split(/\s*,\s*/).filter(Boolean)) {
+        if (/%|lb/i.test(part)) { res.push(...parseScheme(part).map(x => ({...x, text: "", note: ""}))); continue; }
+        const m = part.match(/^(\d+)(?:\s*-\s*\d+)?\s*[x×]\s*(.+)$/i);
+        if (m) for (let i = 0; i < Math.min(+m[1], 20); i++) res.push({reps: m[2].trim(), pct: null, load: null, text: "", note: ""});
+      }
+      return res;
+    };
+    weeks.forEach((w, k) => {
+      const items = [];
+      if (warm) items.push({row: hi + ":wu", kind: "warmup", name: "Warm Up", block: "", notes: warm, sets: []});
+      for (const e of exs) {
+        const wk = e.weeks[k];
+        let sets = wk.sets.length ? wk.sets : schemeSets(wk.scheme);
+        if (!sets.length && !wk.notes.length) continue;
+        if (!wk.sets.length && wk.schemeLoad) sets = sets.map(x => ({...x, pct: wk.schemeLoad.pct ?? x.pct, load: wk.schemeLoad.load ?? x.load, text: wk.schemeLoad.text || x.text}));
+        const notes = [e.notes.join("\n"), wk.notes.join(" · ")].filter(Boolean).join("\n");
+        items.push({row: hi + ":" + e.row, name: e.name, block: e.block, notes, sets});
+      }
+      if (items.some(x => x.kind !== "warmup")) out.push({label: [w.label, dayLabel].filter(Boolean).join(" · "), week: w.n, dayNum, items});
+    });
+  });
+  return out.length ? out : null;
+}
+function matchPlayer(sn) {
+  const s = String(sn).trim(); if (/^sheet\s*\d*/i.test(s)) return null;
+  const toks = s.replace(/[.,]/g, " ").split(/\s+/).filter(t => t && !/^(jr|sr|ii|iii)$/i.test(t));
+  if (!toks.length) return null;
+  const last = toks[toks.length - 1].toLowerCase(), init = toks.length > 1 ? toks[0][0].toLowerCase() : "";
+  let c = ROSTER.filter(p => p.name.split(",")[0].trim().toLowerCase() === last);
+  if (c.length > 1 && init) c = c.filter(p => (p.name.split(",")[1] || "").trim().toLowerCase().startsWith(init));
+  return c.length === 1 ? c[0].key : null;
+}
+function lev(a, b) {
+  const d = Array.from({length: b.length + 1}, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) { let p = d[0]; d[0] = i; for (let j = 1; j <= b.length; j++) { const t = d[j]; d[j] = Math.min(d[j] + 1, d[j - 1] + 1, p + (a[i - 1] === b[j - 1] ? 0 : 1)); p = t; } }
+  return d[b.length];
+}
+const sameEx = (a, b) => { const x = String(a).toLowerCase().replace(/[^a-z0-9]/g, ""), y = String(b).toLowerCase().replace(/[^a-z0-9]/g, ""); return x === y || lev(x, y) <= Math.max(2, Math.floor(Math.min(x.length, y.length) * 0.12)); };
+const loadOf = s => s.load != null ? s.load : (s.pct != null ? null : (s.text || null));
+const bareSet = s => ({reps: s.reps, pct: s.pct ?? null, load: null, note: s.note || ""});
+function combineGrids(grids) {
+  const keyed = grids.filter(g => g.key);
+  const unmatched = grids.filter(g => !g.key && !/^sheet\s*\d*/i.test(g.sn)).map(g => g.sn);
+  if (keyed.length < 2) {
+    const days = grids.flatMap(g => g.days.map(d => ({...d, items: d.items.map(it => ({id: uid(), name: it.name, block: it.block, kind: it.kind, basis: guessBasis(it.name), notes: it.notes,
+      sets: it.sets.map(x => ({reps: x.reps, pct: x.pct ?? null, load: x.load ?? null, note: [x.note, x.text].filter(Boolean).join(" · ")}))}))})));
+    return {days, players: 0, unmatched};
+  }
+  const pool = grids.filter(g => g.key || /^sheet\s*\d*/i.test(g.sn));
+  const dayMap = new Map();
+  for (const g of pool) for (const d of g.days) {
+    const k = d.week + "|" + d.dayNum;
+    if (!dayMap.has(k)) dayMap.set(k, {label: d.label, week: d.week, dayNum: d.dayNum, rows: new Map()});
+    const D = dayMap.get(k);
+    for (const it of d.items) { if (!D.rows.has(it.row)) D.rows.set(it.row, []); D.rows.get(it.row).push({...it, pk: g.key}); }
+  }
+  const keys = [...new Set(keyed.map(g => g.key))];
+  const rowNum = r => { const [a, b] = r.split(":"); return (+a) * 1e4 + (b === "wu" ? -1 : +b); };
+  const days = [...dayMap.values()].sort((a, b) => a.week - b.week || a.dayNum - b.dayNum).map(D => {
+    const items = [...D.rows.keys()].sort((a, b) => rowNum(a) - rowNum(b)).map(rk => {
+      const ents = D.rows.get(rk);
+      const clusters = [];
+      for (const e of ents) { const c = clusters.find(c => sameEx(c[0].name, e.name)); if (c) c.push(e); else clusters.push([e]); }
+      clusters.sort((a, b) => b.length - a.length);
+      const major = clusters[0];
+      const counts = {}; major.forEach(e => counts[e.name] = (counts[e.name] || 0) + 1);
+      const rep = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+      const base = major.find(e => e.name === rep);
+      if (major.length * 2 < keys.length && base.kind !== "warmup") return null; // only a few players have something in this row
+      const it = {id: uid(), name: rep, block: base.block, kind: base.kind, basis: guessBasis(rep), notes: base.notes, sets: base.sets.map(bareSet), pl: {}, alt: {}};
+      for (const k of keys) {
+        const e = ents.find(x => x.pk === k);
+        if (!e) { it.alt[k] = {hidden: true}; continue; }
+        if (!sameEx(e.name, rep)) it.alt[k] = {name: e.name, block: e.block, notes: e.notes, sets: e.sets.map(bareSet)};
+        const loads = e.sets.map(loadOf);
+        if (loads.some(v => v != null)) it.pl[k] = loads;
+      }
+      return it;
+    }).filter(Boolean);
+    return {label: D.label, week: D.week, dayNum: D.dayNum, items};
+  });
+  return {days, players: keys.length, unmatched};
+}
+function parseWorkbook(wb, title) {
+  const sheetRows = wb.SheetNames.map(sn => [sn, XLSX.utils.sheet_to_json(wb.Sheets[sn], {header: 1, defval: "", raw: true, blankrows: true})]);
+  const gi = {};
+  const grids = sheetRows.map(([sn, rows], i) => { const key = matchPlayer(sn), grp = key ? null : sheetGroup(sn); const idx = grp ? (gi[grp] = (gi[grp] ?? -1) + 1) : i; return {sn, key, grp, days: parseWeekGrid(rows, grp ? "" : sn, idx)}; }).filter(g => g.days);
+  if (grids.length) {
+    const gg = grids.filter(g => g.grp), rest = grids.filter(g => !g.grp);
+    const r = rest.length ? combineGrids(rest) : {days: [], players: 0, unmatched: []};
+    if (gg.length) {
+      const map = new Map(r.days.map(d => [d.week + "|" + d.dayNum, d]));
+      for (const g of gg) for (const d of g.days) {
+        const items = d.items.map(it => ({id: uid(), name: it.name, block: it.block, kind: it.kind, basis: guessBasis(it.name), notes: it.notes, grp: g.grp,
+          sets: it.sets.map(x => ({reps: x.reps, pct: x.pct ?? null, load: x.load ?? null, note: [x.note, x.text].filter(Boolean).join(" · ")}))}));
+        const k = d.week + "|" + d.dayNum, ex = map.get(k);
+        if (ex) ex.items.push(...items); else { const nd = {label: d.label, week: d.week, dayNum: d.dayNum, items}; map.set(k, nd); r.days.push(nd); }
+      }
+      r.days.sort((a, b) => (a.week ?? 0) - (b.week ?? 0) || (a.dayNum ?? 0) - (b.dayNum ?? 0));
+      r.groups = [...new Set(gg.map(g => g.grp))];
+    }
+    r.days.forEach(d => d.title = title ? `${title} · ${d.label}` : d.label);
+    return r;
+  }
+  const days = [], fbGroups = new Set();
+  let cur = null;
+  const dayFor = label => { let d = days.find(x => x.label === label); if (!d) { d = {label, items: []}; days.push(d); } return d; };
+  for (const [sn, rows] of sheetRows) {
+    let m = null; cur = null; let week = "", day = "";
+    for (const row of rows) {
+      const cells = row.map(c => typeof c === "string" ? c.trim() : c);
+      const filled = cells.filter(c => c !== "" && c != null);
+      if (!filled.length) continue;
+      const hm = mapHeader(cells);
+      if (hm) { m = hm; continue; }
+      if (filled.length <= 2 && typeof filled[0] === "string" && DAYLABEL.test(filled[0]) && !(m && cells[m.ex] && cells[m.ex] !== filled[0])) {
+        const t = filled.join(" ");
+        if (/^(week|wk)\s*\d+\s*$/i.test(t)) { week = t; continue; }
+        day = t; cur = null; continue;
+      }
+      let name, sets, notes = "";
+      if (m) {
+        if (m.week != null && cells[m.week] !== "") week = (/^\d+$/.test(String(cells[m.week])) ? "Week " : "") + cells[m.week];
+        if (m.day != null && cells[m.day] !== "") { const dv = cells[m.day]; day = typeof dv === "number" && dv > 30000 ? iso(new Date(Math.round((dv - 25569) * 864e5) + new Date().getTimezoneOffset() * 6e4)) : (/^\d+$/.test(String(dv)) ? "Day " + dv : String(dv)); }
+        name = String(cells[m.ex] ?? "").trim();
+        if (!name) continue;
+        sets = rowSets(cells, m);
+        if (m.notes != null) notes = String(cells[m.notes] || "");
+      } else {
+        const first = cells.findIndex(c => typeof c === "string" && /[a-z]/i.test(c));
+        if (first < 0) continue;
+        name = cells[first];
+        const rest = cells.slice(first + 1).filter(c => c !== "").map(c => typeof c === "string" && /^\d+(\.\d+)?$/.test(c) ? +c : c);
+        if (rest.length >= 2 && rest.length <= 3 && typeof rest[0] === "number" && typeof rest[1] === "number" && (rest.length === 2 || typeof rest[2] === "number" || /^\d+(\.\d+)?\s*%$/.test(rest[2]))) {
+          const [n, r, p] = rest; const pc = p == null ? null : normPct(p);
+          sets = Array.from({length: Math.min(n, 20)}, () => ({reps: String(r), pct: pc, load: null}));
+        } else sets = rest.flatMap(c => typeof c === "number" ? [{reps: String(c), pct: null, load: null}] : parseScheme(c));
+        if (!rest.length) {
+          const sm = name.match(/^(.*?[a-z)\]])\s+(\d.*)$/i);
+          if (sm && parseScheme(sm[2]).length) { name = sm[1]; sets = parseScheme(sm[2]); }
+        }
+      }
+      const multi = wb.SheetNames.length > 1, grp = sheetGroup(sn);
+      if (grp) fbGroups.add(grp);
+      const label = [week || (multi && day && !grp ? sn : ""), day].filter(Boolean).join(" · ") || (multi && !grp ? sn : "Lift");
+      const d = dayFor(label);
+      const last = d.items[d.items.length - 1];
+      if (last && (last.grp || null) === grp && last.name.toLowerCase() === name.toLowerCase() && m && (m.setno != null || last._run)) { last.sets.push(...sets); if (notes && !last.notes.includes(notes)) last.notes += (last.notes ? " " : "") + notes; continue; }
+      d.items.push({id: uid(), name, basis: guessBasis(name), sets, notes, _run: m && m.setno != null, ...(grp ? {grp} : {})});
+    }
+  }
+  days.forEach(d => d.items.forEach(it => delete it._run));
+  const out = days.filter(d => d.items.length);
+  out.forEach(d => d.title = title && wb.SheetNames.length === 1 ? title : d.label);
+  return {days: out, players: 0, unmatched: [], groups: [...fbGroups]};
+}
+const DOW = [[1, "Monday"], [2, "Tuesday"], [3, "Wednesday"], [4, "Thursday"], [5, "Friday"], [6, "Saturday"], [0, "Sunday"]];
+function savedDow() { try { return JSON.parse(localStorage.getItem("icc-wr-dow") || "{}") || {}; } catch (e) { return {}; } }
+function defaultDow(src, dayNum) {
+  const m = savedDow(); if (m[src] != null) return m[src];
+  const n = String(src).toLowerCase();
+  return {1: 1, 2: 2, 3: 4, 4: 5, 5: 6}[dayNum] ?? 1;
+}
+function recomputeDates(u) {
+  u.dow = u.dow || {};
+  u.days.forEach(d => { if (d.week != null && u.dow[d.src] == null) u.dow[d.src] = defaultDow(d.src, d.dayNum); });
+  const sd = fromIso(u.start), mon = new Date(sd); mon.setDate(sd.getDate() - (sd.getDay() + 6) % 7);
+  const weekly = u.days.filter(d => d.week != null);
+  const firstWk = {}; weekly.forEach(d => firstWk[d.src] = Math.min(firstWk[d.src] ?? 99, d.week));
+  const off = d => (u.dow[d.src] + 6) % 7;
+  if (weekly.length) { const minOff = Math.min(...weekly.filter(d => d.week === firstWk[d.src]).map(off)); if ((sd.getDay() + 6) % 7 > minOff) mon.setDate(mon.getDate() + 7); }
+  const seqDays = u.days.filter(d => d.week == null), seq = defaultDates(seqDays, u.start, u.skip);
+  u.dates = u.days.map(d => {
+    if (d.week == null) return seq[seqDays.indexOf(d)];
+    const x = new Date(mon); x.setDate(mon.getDate() + 7 * (d.week - firstWk[d.src]) + off(d)); return iso(x);
+  });
+}
+function defaultLiftDays() {
+  try { const v = JSON.parse(localStorage.getItem("icc-wr-liftdays") || "null"); if (Array.isArray(v) && v.length) return v; } catch (e) {}
+  return [1, 2, 4, 5];
+}
+function defaultDates(days, start, skipWeekends, liftDays) {
+  const WD = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+  let cursor = start; const out = [];
+  if (liftDays && liftDays.length && days.length && days.every(d => d.week != null)) {
+    const ld = liftDays.slice().sort((a, b) => a - b);
+    const sd = fromIso(start), mon = new Date(sd); mon.setDate(sd.getDate() - (sd.getDay() + 6) % 7);
+    const firstWk = Math.min(...days.map(d => d.week));
+    const slot = d => { const idx = Math.max(0, d.dayNum - 1); return {off: (ld[idx % ld.length] + 6) % 7, extra: Math.floor(idx / ld.length)}; };
+    const minOff = Math.min(...days.filter(d => d.week === firstWk).map(d => slot(d).off + 7 * slot(d).extra));
+    if ((sd.getDay() + 6) % 7 > minOff) mon.setDate(mon.getDate() + 7);
+    return days.map(d => { const sl = slot(d); const x = new Date(mon); x.setDate(mon.getDate() + 7 * (d.week - firstWk + sl.extra) + sl.off); return iso(x); });
+  }
+  for (const d of days) {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d.label)) { out.push(d.label); continue; }
+    const wm = d.label.match(/(?:week|wk)\s*(\d+)/i), dm = d.label.toLowerCase().match(/\b(sun|mon|tue|wed|thu|fri|sat)/);
+    if (dm) {
+      const base = fromIso(start); const wk = wm ? +wm[1] - 1 : 0;
+      const sd = fromIso(start); sd.setDate(sd.getDate() - sd.getDay()); sd.setDate(sd.getDate() + wk * 7 + WD.indexOf(dm[1]));
+      if (sd < base && !wm) sd.setDate(sd.getDate() + 7);
+      out.push(iso(sd)); continue;
+    }
+    while (skipWeekends && [0, 6].includes(fromIso(cursor).getDay())) cursor = addDays(cursor, 1);
+    out.push(cursor); cursor = addDays(cursor, 1);
+  }
+  return out;
+}
+
+/* ---------- views ---------- */
+const TABS = () => [["home", "Home"], ["calendar", "Calendar"], ["day", "Workout"], ["roster", "Roster"], ["leaders", "Leaderboards"], ...(isCoach() ? [["coach", "Coaches"], ["upload", "Upload"]] : [])];
+function renderTabs() {
+  const cur = S.view === "player" ? (S.prevView === "coach" ? "coach" : "roster") : S.view;
+  $("#tabs").innerHTML = TABS().map(([h, l]) => `<a href="#${h}" ${cur === h ? 'aria-current="page"' : ""}>${l}</a>`).join("");
+}
+function render() {
+  if (!S.authed) { if (S.authReady || S.authView) renderAuth(); return; }
+  if (!S.me && !S.coach) { $("#tabs").innerHTML = ""; $("#app").innerHTML = vNoAccess(); $("#naRetry").onclick = () => location.reload(); $("#naOut").onclick = signOut; return; }
+  renderTabs();
+  const app = $("#app");
+  const v = {home: vHome, calendar: vCalendar, day: vDay, roster: vRoster, player: vPlayer, leaders: vLeaders, upload: vUpload, coach: vCoach}[S.view] || vHome;
+  const scroll = window.scrollY;
+  app.innerHTML = (S.offline ? `<div class="banner">Team data can't be reached yet. What you see may be out of date.</div>` : "")
+    + v();
+  window.scrollTo(0, scroll);
+}
+
+function workoutChips(date) {
+  return dayWorkouts(date).map(w => `<li><span class="kind ${w.kind === "cond" ? "c" : ""}">${w.kind === "cond" ? "COND" : "LIFT"}</span><span>${esc(w.title || (w.kind === "cond" ? "Conditioning" : "Lift"))} <span class="sub">${(w.items || []).length} ${w.kind === "cond" ? "task" : "exercise"}${(w.items || []).length === 1 ? "" : "s"}</span></span></li>`).join("");
+}
+function nextScheduled(from) {
+  return Object.keys(S.days).filter(d => d > from && dayWorkouts(d).length).sort()[0];
+}
+function vHome() {
+  if (S.date !== todayIso()) { S.date = todayIso(); S.month = S.date.slice(0, 7); subDayLogs(); }
+  const t = todayIso(), ws = dayWorkouts(t), me = S.me && player(S.me);
+  let hero;
+  if (ws.length) {
+    const p = me ? progress(t, S.me) : null;
+    hero = `<div class="hero"><div class="sub">Today</div><div class="date">${esc(fmtDate(t))}</div><ul>${workoutChips(t)}</ul>
+      ${p ? `<div class="prog" aria-label="${p.done} of ${p.total} done"><i style="width:${p.total ? p.done / p.total * 100 : 0}%"></i></div><div class="sub" style="margin-top:6px">${p.done} of ${p.total} tasks done</div>` : ""}
+      <div class="actions"><button class="btn" data-go-day="${t}">${me ? (p && p.done ? "Continue today's workout" : "Start today's workout") : "Open today's workout"}</button>${isCoach() ? `<button class="btn ghost" data-go-day="${t}" data-team="1">Team check-in</button>` : ""}</div></div>`;
+  } else {
+    const n = nextScheduled(t);
+    hero = `<div class="hero"><div class="sub">Today</div><div class="date">${esc(fmtDate(t))}</div>
+      <p style="margin:10px 0 0">Nothing scheduled today.${n ? ` Next up: <b>${esc(fmtDate(n))}</b>.` : ""}</p>
+      <div class="actions">${n ? `<button class="btn" data-go-day="${n}">See next workout</button>` : ""}${isCoach() ? `<button class="btn ${n ? "ghost" : ""}" data-go-day="${t}">Add today's lift</button><a class="btn ghost" href="#upload">Upload a lift</a>` : ""}</div></div>`;
+  }
+  let team = "";
+  if (ws.length) {
+    let fin = 0, started = 0;
+    ROSTER.forEach(p => { const pt = playerTasks(t, p.key), tasks = pt.length; const lg = S.dayLogs[logId(t, p.key)]; const d = lg ? pt.filter(x => lg.items?.[x.id]?.done).length : 0; if (d) started++; if (tasks && d === tasks) fin++; });
+    team = `<div class="section"><div class="section-head"><h2>Team today</h2>${isCoach() ? `<button class="linkbtn" data-go-day="${t}" data-team="1">See who's done</button>` : ""}</div>
+      <div class="grid2"><div class="tile"><div class="lbl">Finished</div><div class="val">${fin}<span class="sub"> / ${ROSTER.length}</span></div></div><div class="tile"><div class="lbl">Started</div><div class="val">${started}<span class="sub"> / ${ROSTER.length}</span></div></div></div></div>`;
+  }
+  const leaders = [...LIFTS.map(([l, n]) => [n, k => maxOf(k, l)]), ["Total", total]].map(([n, f]) => {
+    const best = ROSTER.map(p => [p, f(p.key)]).filter(x => x[1]).sort((a, b) => b[1] - a[1])[0];
+    return `<button class="tile" ${best ? `data-player="${best[0].key}"` : ""}><div class="lbl">${n}</div><div class="val">${best ? best[1] : "—"}</div><div class="who">${best ? esc(pretty(best[0].name)) : "No maxes yet"}</div></button>`;
+  }).join("");
+  const nav = [["calendar", "Calendar", "Lifts and conditioning by day", '<path d="M4 6h16v14H4zM4 10h16M9 3v4M15 3v4"/>'],
+    ["roster", "Roster", `${ROSTER.length} players, maxes and body weight`, '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.6c2 .7 3.2 2.5 3.5 5.4"/>'],
+    ["leaders", "Leaderboards", "Bench, squat, deadlift, total, relative strength", '<path d="M6 20V10M12 20V4M18 20v-7"/>']];
+  if (isCoach()) nav.push(["coach", "Coaches dashboard", "Daily check-ins and monthly consistency", '<path d="M4 20V4M4 20h16M8 16l4-5 3 3 5-6"/>']);
+  if (isCoach()) nav.push(["upload", "Upload a lift", "Post Excel lifts to the calendar", '<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>']);
+  return `<div style="margin-bottom:22px">${vCalendar()}</div>
+    ${hero}${team}
+    <div class="section"><div class="section-head"><h2>Team leaders</h2><a href="#leaders">All leaderboards</a></div><div class="grid2 grid4">${leaders}</div></div>
+    <div class="section">${nav.map(([h, b, s, ic]) => `<a class="navrow" href="#${h}"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></span><div><b>${b}</b><span>${s}</span></div><span class="chev">›</span></a>`).join("")}</div>`;
+}
+
+function shortTitle(w) {
+  if (w.kind === "cond") return "Cond";
+  const m = String(w.title || "").match(/\b(lower|upper|total|full)\b/i);
+  return m ? m[1][0].toUpperCase() + m[1].slice(1).toLowerCase() : "Lift";
+}
+function vCalendar() {
+  const [y, m] = S.month.split("-").map(Number);
+  const first = new Date(y, m - 1, 1), start = new Date(first); start.setDate(1 - first.getDay());
+  const cells = [];
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(start); d.setDate(start.getDate() + i); const s = iso(d);
+    if (i >= 35 && d.getMonth() !== m - 1) break;
+    const ws = dayWorkouts(s);
+    const p = S.me && ws.length ? progress(s, S.me) : null;
+    cells.push(`<button class="cday ${d.getMonth() !== m - 1 ? "out" : ""} ${s === todayIso() ? "today" : ""}" data-go-day="${s}" aria-pressed="${s === S.date}" aria-label="${esc(fmtDate(s))}${ws.length ? ", " + ws.length + " scheduled" : ""}">
+      <span class="n">${d.getDate()}</span>${ws.map(w => `<span class="ch ${w.kind === "cond" ? "c" : ""}"><span class="lg">${esc(w.title || (w.kind === "cond" ? "Cond" : "Lift"))}</span><span class="sm">${esc(shortTitle(w))}</span></span>`).join("")}
+      ${p && p.total ? `<span class="ok">${p.done === p.total ? "✓ Done" : p.done ? `${p.done}/${p.total}` : ""}</span>` : ""}</button>`);
+  }
+  const title = first.toLocaleDateString("en-US", {month: "long", year: "numeric"});
+  return `<div class="calhead"><h1>${esc(title)}</h1><div class="row"><button class="btn ghost sm" data-month="-1" aria-label="Previous month">‹</button><button class="btn ghost sm" data-month="0">Today</button><button class="btn ghost sm" data-month="1" aria-label="Next month">›</button></div></div>
+    <div class="cal">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => `<div class="dow">${d}</div>`).join("")}${cells.join("")}</div>
+    <p class="sub" style="margin-top:10px">${isCoach() ? "Tap a day to add a lift or conditioning." : "Tap a day to see the workout."} <span class="kind calk">LIFT</span> <span class="kind c calk">COND</span></p>`;
+}
+
+function vDay() {
+  subDayLogs();
+  const d = S.date, ws = dayWorkouts(d), coach = isCoach();
+  const who = S.viewAs || S.me;
+  const nav = `<div class="calhead"><div><div class="sub">${d === todayIso() ? "Today" : ""}</div><h1>${esc(fmtDate(d))}</h1></div><div class="row"><button class="btn ghost sm" data-shift="-1" aria-label="Previous day">‹</button><button class="btn ghost sm" data-shift="1" aria-label="Next day">›</button></div></div>`;
+  const coachBar = coach ? `<div class="row" style="margin:8px 0 4px"><button class="btn sm" data-add="lift">Add lift</button><button class="btn sm navy" data-add="cond">Add conditioning</button>${Object.keys(S.programs).length ? `<button class="btn ghost sm" data-add="program">Add from uploaded program</button>` : ""}</div>` : "";
+  if (S.teamView && coach) return nav + coachBar + seg() + teamStatus(d);
+  let whoBar = "";
+  if (coach) whoBar = `<div class="who"><label class="sub" for="viewAs">Show weights for</label><select class="inp" id="viewAs"><option value="">Choose a player</option>${ROSTER.map(p => `<option value="${p.key}" ${p.key === who ? "selected" : ""}>#${p.no} ${esc(pretty(p.name))}</option>`).join("")}</select></div>`;
+  if (!ws.length) return nav + coachBar + (coach ? seg() : "") + `<div class="panel empty" style="margin-top:12px">${coach ? "Nothing on this day yet. Add a lift or conditioning above." : "Rest day. Nothing scheduled."}</div>`;
+  const p = who ? progress(d, who) : null;
+  const pl = who && player(who);
+  return nav + coachBar + (coach ? seg() : "") + whoBar
+    + (pl ? `<div class="row" style="justify-content:space-between;margin-top:8px"><div><b>${esc(pretty(pl.name))}</b> <span class="sub">${LIFTS.map(([l, n]) => `${n.split(" ")[0]} ${maxOf(who, l) || "—"}`).join(" · ")}</span></div><span class="sub">${p.done} of ${p.total} done</span></div><div class="prog" style="margin-top:6px"><i style="width:${p.total ? p.done / p.total * 100 : 0}%"></i></div>` : "")
+    + (who && lockReason(d) ? `<div class="banner" style="margin-top:12px">🔒 ${esc(lockReason(d))}</div>` : "")
+    + ws.map(w => workoutCard(d, w, who)).join("");
+}
+function seg() {
+  return `<div class="seg" style="margin-top:10px"><button data-team="0" aria-pressed="${!S.teamView}">Workout</button><button data-team="1" aria-pressed="${!!S.teamView}">Team check-in</button></div>`;
+}
+function resolveItem(it, who) { if (who && it.grp && GROUP_NAME[it.grp] && groupOf(who) !== it.grp) return {...it, hidden: true}; const a = who && it.alt && it.alt[who]; return a ? {...it, ...a} : it; }
+function ownLoad(who, it, i) { const pl = who && it.pl && it.pl[who]; const v = pl ? pl[i] : null; return v == null || v === "" ? null : v; }
+function tgtFor(who, it, s, i) {
+  const own = ownLoad(who, it, i); if (own != null) return own;
+  if (s.pct != null) return target(who, basisOf(it), s.pct);
+  return s.load ?? null;
+}
+function workoutCard(d, w, who) {
+  const cond = w.kind === "cond", edit = who && canEditPlayer(who) && !lockReason(d), lg = who ? logFor(d, who) : {items: {}};
+  const items = (w.items || []).map(it0 => {
+    const it = resolveItem(it0, who); if (it.hidden) return "";
+    const tid = w.id + ":" + it.id, li = lg.items?.[tid] || {}, done = !!li.done;
+    const doneBtn = who ? `<button class="done" data-done="${tid}" aria-pressed="${done}" ${edit ? "" : "disabled"}><span class="bx">${done ? "✓" : ""}</span>${done ? "Done" : "Mark done"}${done && li.at ? `<small class="dt">${li.by !== "coach" && !onTime(li.at, d) ? "Late · " : ""}${esc(fmtStamp(li.at, d))}${li.by === "coach" ? " · coach" : ""}</small>` : ""}</button>` : "";
+    if (it.kind === "warmup") {
+      return `<div class="ex ${done ? "isdone" : ""}"><div class="ex-h"><div><b>Warm Up</b><div class="exnote">${esc(it.notes || "")}</div></div>${doneBtn}</div></div>`;
+    }
+    if (cond) {
+      return `<div class="ex ${done ? "isdone" : ""}"><div class="ex-h"><div><b>${esc(it.name)}</b>${it.notes ? `<div class="exnote">${esc(it.notes)}</div>` : ""}</div>${doneBtn}</div>
+        ${who ? `<input class="inp cond-in" data-result="${tid}" placeholder="Result or notes (times, distance)" value="${esc(li.note || "")}" ${edit ? "" : "disabled"}>` : ""}</div>`;
+    }
+    const bs = basisOf(it), dm = bs === "dbbench" ? maxOf(who, "db") : null, m = dm || (bs ? maxOf(who, rootLift(bs)) : null);
+    const hasPct = (it.sets || []).some(s => s.pct != null), hasNote = (it.sets || []).some(s => s.note);
+    const rows = (it.sets || []).map((s, i) => {
+      const tg = tgtFor(who, it, s, i), own = ownLoad(who, it, i) != null;
+      let tgCell;
+      if (typeof tg === "string") tgCell = `<td class="tg txt">${esc(tg)}</td>`;
+      else if (s.pct != null && !bs && !own) tgCell = `<td class="tg na">Coach: set the max</td>`;
+      else if (s.pct != null && who && !m && !own) tgCell = `<td class="tg na">${isCoach() ? `<button class="linkbtn" data-addmax="${rootLift(bs)}">Add ${esc(LIFT_NAME[rootLift(bs)].toLowerCase())} max</button>` : "No max yet. Ask a coach"}</td>`;
+      else tgCell = `<td class="tg">${tg ?? "—"}</td>`;
+      const act = li.w?.[i] ?? "";
+      return `<tr><td>${i + 1}</td>${hasNote ? `<td class="snote">${esc(s.note || "")}</td>` : ""}<td>${esc(s.reps || "—")}</td>${hasPct ? `<td>${s.pct != null ? +(s.pct * 100).toFixed(1) + "%" : ""}</td>` : ""}${tgCell}<td>${who ? `<input type="number" inputmode="decimal" min="0" step="2.5" data-act="${tid}" data-i="${i}" value="${esc(act)}" placeholder="${typeof tg === "number" ? tg : "lb"}" aria-label="Set ${i + 1} actual weight" ${edit ? "" : "disabled"}>` : ""}</td></tr>`;
+    }).join("");
+    const basisNote = !bs ? "" : dm ? `% of DB bench max (${dm})` : CONV[bs] ? `% of est. DB max${m ? ` ${Math.round(m * convPct(bs) / 100)}` : ""} (${convPct(bs)}% of ${m ? m + " " : ""}bench)` : `% of ${LIFT_NAME[bs].toLowerCase()} max${m ? ` (${m})` : ""}`;
+    return `<div class="ex ${done ? "isdone" : ""}"><div class="ex-h"><div><b>${it.block ? `<span class="blk">${esc(it.block)}</span>` : ""}${esc(it.name)}</b>${it.grp && GROUP_NAME[it.grp] && !who ? `<span class="gtag">${GROUP_NAME[it.grp]}</span>` : ""}<span class="sub">${esc(schemeText(it.sets || []))}${basisNote && hasPct ? " · " + basisNote : ""}</span></div>${doneBtn}</div>
+      ${(it.sets || []).length ? `<table class="sets"><thead><tr><th>Set</th>${hasNote ? "<th>Intensity</th>" : ""}<th>Reps</th>${hasPct ? "<th>%</th>" : ""}<th>Target</th><th>Actual</th></tr></thead><tbody>${rows}</tbody></table>` : (who ? `<table class="sets"><tbody><tr><td>Weight</td><td><input type="number" inputmode="decimal" data-act="${tid}" data-i="0" value="${esc(li.w?.[0] ?? "")}" placeholder="lb" ${edit ? "" : "disabled"}></td></tr></tbody></table>` : "")}
+      ${who && edit && (it.sets || []).some((s, i) => typeof tgtFor(who, it, s, i) === "number" && (li.w?.[i] ?? "") === "") ? `<button class="linkbtn" style="margin-top:6px" data-fill="${tid}">Fill actual with targets</button>` : ""}
+      ${it.notes ? `<div class="exnote">${esc(it.notes)}</div>` : ""}</div>`;
+  }).join("");
+  if (who && !items && (w.items || []).length && (w.items || []).every(it => resolveItem(it, who).hidden)) return "";
+  return `<section class="wk"><div class="wk-h ${cond ? "c" : ""}"><div><h3>${esc(w.title || (cond ? "Conditioning" : "Lift"))}</h3><span class="sub">${cond ? "Conditioning" : "Lift"}</span></div>
+    ${isCoach() ? `<div class="row"><button class="btn ghost sm" data-editw="${w.id}">Edit</button></div>` : ""}</div>
+    ${w.notes ? `<div class="wk-notes">${esc(w.notes)}</div>` : ""}${items || `<div class="empty">No exercises yet.</div>`}</section>`;
+}
+function teamStatus(d) {
+  const tasks = taskList(d);
+  if (!tasks.length) return `<div class="panel empty">Nothing scheduled on this day.</div>`;
+  const hasGrp = tasks.some(t => t.it.grp);
+  const rows = ROSTER.map(p => { const pt = playerTasks(d, p.key); const lg = S.dayLogs[logId(d, p.key)]; const n = lg ? pt.filter(t => lg.items?.[t.id]?.done).length : 0; return {p, n, tot: pt.length}; })
+    .sort((a, b) => b.n - a.n || a.p.no - b.p.no);
+  return `<div class="tablewrap"><table><thead><tr><th>Player</th><th></th><th>Done</th></tr></thead><tbody>
+    ${rows.map(({p, n, tot}) => `<tr class="go" data-viewas="${p.key}"><td><span class="jn">${p.no}</span><span class="pname">${esc(pretty(p.name))}</span></td><td>${hasGrp ? `<span class="sub">${GROUP_NAME[groupOf(p.key)]}</span>` : ""}</td><td>${tot && n === tot ? `<b style="color:var(--good)">✓ ${n}/${tot}</b>` : `${n}/${tot}`}<span class="bar"><i style="width:${tot ? n / tot * 100 : 0}%"></i></span></td></tr>`).join("")}
+  </tbody></table></div>`;
+}
+
+/* ---------- coaches dashboard ---------- */
+let unsubMonth = null, subMonth = null;
+function subMonthLogs(month) {
+  if (subMonth === month) return; subMonth = month;
+  unsubMonth && unsubMonth();
+  const [y, m] = month.split("-").map(Number);
+  unsubMonth = store.watch("logs", [["date", ">=", month + "-01"], ["date", "<=", iso(new Date(y, m, 0))]], d => { S.monthLogs = d; schedule(); });
+}
+/* completion window: players can only check off a workout on its day (plus any grace days the staff allow) */
+const graceDays = () => S.config.grace == null ? 0 : Number(S.config.grace);
+const deadline = date => addDays(date, Math.max(graceDays(), 0));
+const onTime = (at, date) => !at || iso(new Date(at)) <= deadline(date);
+const fmtStamp = (at, date) => { const t = new Date(at), time = t.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"}); return iso(t) === date ? time : `${t.toLocaleDateString("en-US", {month: "short", day: "numeric"})}, ${time}`; };
+function lockReason(date) {
+  if (isCoach() || graceDays() < 0) return "";
+  const t = todayIso(), o = {weekday: "long", month: "short", day: "numeric"};
+  if (t < date) return `This workout opens on ${fmtDate(date, o)}. You can look ahead, but check-offs start that day.`;
+  if (t > deadline(date)) return `Check-offs for this workout closed at the end of ${fmtDate(deadline(date), o)}.`;
+  return "";
+}
+function playerTasks(date, k) { return taskList(date).filter(t => !resolveItem(t.it, k).hidden); }
+function dayStat(date, k) {
+  const tasks = playerTasks(date, k);
+  const lg = (S.monthLogs || {})[logId(date, k)] || (date === S.date ? S.dayLogs[logId(date, k)] : null) || S.playerLogs[logId(date, k)] || null;
+  const li = t => lg?.items?.[t.id] || {};
+  const isDone = t => !!li(t).done && (li(t).by === "coach" || onTime(li(t).at, date));
+  const L = tasks.filter(t => t.w.kind !== "cond"), C = tasks.filter(t => t.w.kind === "cond");
+  const stamps = tasks.filter(t => li(t).done && li(t).at).map(t => li(t).at).sort();
+  const late = tasks.filter(t => li(t).done && li(t).by !== "coach" && !onTime(li(t).at, date)).length;
+  return {total: tasks.length, done: tasks.filter(isDone).length, lt: L.length, ld: L.filter(isDone).length, ct: C.length, cd: C.filter(isDone).length, last: stamps[stamps.length - 1] || null, late};
+}
+function timeCell(s, date) {
+  if (!s.last) return `<span class="st none">—</span>`;
+  return s.late ? `<span class="st miss">Late · ${esc(fmtStamp(s.last, date))}</span>` : `<span class="sub">${esc(fmtStamp(s.last, date))}</span>`;
+}
+function stCell(d, t, past) {
+  if (!t) return `<span class="st none">—</span>`;
+  if (d === t) return `<span class="st ok">✓ Done</span>`;
+  if (d) return `<span class="st part">${d}/${t}</span>`;
+  return past ? `<span class="st miss">✗ Missed</span>` : `<span class="st none">Not yet</span>`;
+}
+function vCoach() {
+  if (!isCoach()) return `<p class="empty">The coaches dashboard is for the coaching staff.</p>`;
+  subDayLogs();
+  const today = todayIso(), cd = S.date, cm = S.cmonth || today.slice(0, 7); S.cmonth = cm; subMonthLogs(cm);
+  const past = cd < today;
+  /* daily */
+  const tasks = taskList(cd);
+  let daily;
+  if (!tasks.length) daily = `<div class="panel empty">Nothing scheduled on this day.</div>`;
+  else {
+    const rows = ROSTER.map(p => ({p, s: dayStat(cd, p.key)}));
+    const hasL = rows.some(r => r.s.lt), hasC = rows.some(r => r.s.ct);
+    const fin = rows.filter(r => r.s.total && r.s.done === r.s.total).length, started = rows.filter(r => r.s.done && r.s.done < r.s.total).length, none = rows.filter(r => r.s.total && !r.s.done).length;
+    const f = S.cfilter || "all";
+    const shown = rows.filter(r => f === "all" || (f === "open" ? r.s.done < r.s.total : r.s.done === r.s.total)).sort((a, b) => (a.s.done / (a.s.total || 1)) - (b.s.done / (b.s.total || 1)) || a.p.no - b.p.no);
+    daily = `<div class="grid2 grid4"><div class="tile"><div class="lbl">Finished everything</div><div class="val">${fin}<span class="sub"> / ${ROSTER.length}</span></div></div>
+      <div class="tile"><div class="lbl">Partly done</div><div class="val">${started}</div></div>
+      <div class="tile"><div class="lbl">${past ? "Missed" : "Not started"}</div><div class="val" style="color:${none ? "var(--bad)" : "inherit"}">${none}</div></div>
+      <div class="tile"><div class="lbl">Scheduled</div><div class="val" style="font-size:20px;line-height:1.3">${esc(dayWorkouts(cd).map(w => w.kind === "cond" ? "Conditioning" : shortTitle(w)).join(" + "))}</div></div></div>
+      <div class="seg" style="margin-top:12px">${[["all", "Everyone"], ["open", "Not finished"], ["done", "Finished"]].map(([v, l]) => `<button data-cfilter="${v}" aria-pressed="${f === v}">${l}</button>`).join("")}</div>
+      <div class="tablewrap"><table><thead><tr><th>Player</th><th></th>${hasL ? "<th>Lift</th>" : ""}${hasC ? "<th>Conditioning</th>" : ""}<th>Tasks</th><th>Checked off</th></tr></thead><tbody>
+      ${shown.map(({p, s}) => `<tr class="go" data-go-day="${cd}" data-as="${p.key}"><td><span class="jn">${p.no}</span><span class="pname">${esc(pretty(p.name))}</span></td><td></td>${hasL ? `<td>${stCell(s.ld, s.lt, past)}</td>` : ""}${hasC ? `<td>${stCell(s.cd, s.ct, past)}</td>` : ""}<td>${s.done}/${s.total}<span class="bar"><i style="width:${s.total ? s.done / s.total * 100 : 0}%"></i></span></td><td>${timeCell(s, cd)}</td></tr>`).join("") || `<tr><td colspan="6" class="empty">Nobody here.</td></tr>`}
+      </tbody></table></div><p class="sub" style="margin-top:6px">Tap a player to open his workout for this day and see the weights he logged.</p>`;
+  }
+  /* monthly */
+  const [y, m] = cm.split("-").map(Number);
+  const mTitle = new Date(y, m - 1, 1).toLocaleDateString("en-US", {month: "long", year: "numeric"});
+  const ds = Object.keys(S.days).filter(d => d.startsWith(cm) && d <= today && dayWorkouts(d).length).sort();
+  let monthly;
+  if (!ds.length) monthly = `<div class="panel empty">${cm > today.slice(0, 7) ? "This month hasn't started yet." : "No scheduled workouts have happened yet this month."} Numbers fill in after each workout day.</div>`;
+  else {
+    const stats = ROSTER.map(p => {
+      let sched = 0, full = 0, part = 0, miss = 0, ls = 0, lf = 0, cs = 0, cf = 0, td = 0, tt = 0; const heat = [];
+      for (const d of ds) {
+        const s = dayStat(d, p.key); if (!s.total) continue;
+        sched++; tt += s.total; td += s.done;
+        const st = s.done === s.total ? "f" : s.done ? "p" : "m"; heat.push([d, st]);
+        if (st === "f") full++; else if (st === "p") part++; else miss++;
+        if (s.lt) { ls++; if (s.ld === s.lt) lf++; }
+        if (s.ct) { cs++; if (s.cd === s.ct) cf++; }
+      }
+      let streak = 0; for (let i = heat.length - 1; i >= 0; i--) { if (heat[i][1] === "f") streak++; else break; }
+      return {p, sched, full, part, miss, ls, lf, cs, cf, streak, heat, pct: sched ? Math.round(full / sched * 100) : 0, tpct: tt ? Math.round(td / tt * 100) : 0};
+    });
+    const avg = Math.round(stats.reduce((a, b) => a + b.pct, 0) / (stats.length || 1));
+    const perfect = stats.filter(x => x.sched && x.full === x.sched).length, low = stats.filter(x => x.pct < 70).length;
+    const asc = S.csort === "low";
+    stats.sort((a, b) => (asc ? a.pct - b.pct : b.pct - a.pct) || (asc ? a.tpct - b.tpct : b.tpct - a.tpct) || a.p.no - b.p.no);
+    const col = v => v >= 90 ? "var(--good)" : v >= 70 ? "var(--gold)" : "var(--bad)";
+    const frac = (a, b) => b ? `${a}/${b}` : "—";
+    monthly = `<div class="grid2 grid4"><div class="tile"><div class="lbl">Team consistency</div><div class="val" style="color:${col(avg)}">${avg}%</div></div>
+      <div class="tile"><div class="lbl">Workout days so far</div><div class="val">${ds.length}</div></div>
+      <div class="tile"><div class="lbl">Perfect so far</div><div class="val">${perfect}</div></div>
+      <div class="tile"><div class="lbl">Under 70%</div><div class="val" style="color:${low ? "var(--bad)" : "inherit"}">${low}</div></div></div>
+      <div class="seg" style="margin-top:12px"><button data-csort="high" aria-pressed="${!asc}">Most consistent first</button><button data-csort="low" aria-pressed="${asc}">Needs attention first</button></div>
+      <div class="tablewrap"><table><thead><tr><th>Player</th><th></th><th>Consistency</th><th>Full days</th><th>Lifts</th><th>Cond</th><th>Missed</th><th>Streak</th><th style="text-align:left">By day</th></tr></thead><tbody>
+      ${stats.map(x => `<tr class="go" data-player="${x.p.key}" data-ptabgo="log"><td><span class="jn">${x.p.no}</span><span class="pname">${esc(pretty(x.p.name))}</span></td><td></td>
+        <td><span class="pct" style="color:${col(x.pct)}">${x.pct}%</span></td><td>${frac(x.full, x.sched)}</td><td>${frac(x.lf, x.ls)}</td><td>${frac(x.cf, x.cs)}</td><td>${x.miss ? `<b style="color:var(--bad)">${x.miss}</b>` : "0"}</td><td>${x.streak}</td>
+        <td style="text-align:left"><span class="heat">${x.heat.map(([d, st]) => `<i class="${st}" title="${esc(fmtDate(d, {weekday: "short", month: "short", day: "numeric"}))}: ${st === "f" ? "done" : st === "p" ? "partly done" : "missed"}"></i>`).join("")}</span></td></tr>`).join("")}
+      </tbody></table></div>
+      <div class="legendrow"><span><i style="background:var(--good)"></i>Did everything</span><span><i style="background:var(--gold)"></i>Partly done</span><span><i style="background:var(--bad)"></i>Missed</span></div>
+      <p class="sub" style="margin-top:6px">Consistency is the share of workout days a player finished every task. Lifts and Cond count the sessions he fully finished. Streak counts his latest days in a row with everything done. Tap a player to see each day's weights.</p>`;
+  }
+  return `<h1>Coaches dashboard</h1><p class="sub">Who's getting their work in, day by day and across the month.</p>
+    <div class="section"><div class="calhead"><div><div class="sub">Daily check-in${cd === today ? " · Today" : ""}</div><h2>${esc(fmtDate(cd))}</h2></div><div class="row"><button class="btn ghost sm" data-cshift="-1" aria-label="Previous day">‹</button><button class="btn ghost sm" data-cshift="0">Today</button><button class="btn ghost sm" data-cshift="1" aria-label="Next day">›</button></div></div>${daily}</div>
+    <div class="section"><div class="calhead"><div><div class="sub">Monthly consistency</div><h2>${esc(mTitle)}</h2></div><div class="row"><button class="btn ghost sm" data-cmonth="-1" aria-label="Previous month">‹</button><button class="btn ghost sm" data-cmonth="0">This month</button><button class="btn ghost sm" data-cmonth="1" aria-label="Next month">›</button></div></div>${monthly}</div>`;
+}
+function playerLogHtml(k) {
+  const dates = Object.keys(S.days).filter(d => dayWorkouts(d).length && d <= todayIso()).sort().reverse().slice(0, 40);
+  if (!dates.length) return `<div class="panel empty">No workouts yet.</div>`;
+  return dates.map(d => {
+    const lg = S.playerLogs[logId(d, k)] || {items: {}};
+    const tasks = playerTasks(d, k), done = tasks.filter(t => lg.items?.[t.id]?.done).length;
+    const rows = dayWorkouts(d).flatMap(w => (w.items || []).map(it0 => {
+      const it = resolveItem(it0, k); if (it.hidden) return "";
+      const li = lg.items?.[w.id + ":" + it.id] || {};
+      const mark = li.done && li.by !== "coach" && !onTime(li.at, d) ? `<span class="st part" title="Checked off ${esc(li.at ? fmtStamp(li.at, d) : "")}">late</span>` : li.done ? `<span class="st ok" title="${esc(li.at ? fmtStamp(li.at, d) : "")}">✓</span>` : `<span class="st ${d < todayIso() ? "miss" : "none"}">${d < todayIso() ? "✗" : "–"}</span>`;
+      if (it.kind === "warmup") return `<tr><td>${mark}</td><td>Warm Up</td><td class="r"></td></tr>`;
+      if (w.kind === "cond") return `<tr><td>${mark}</td><td>${esc(it.name)}</td><td class="r">${esc(li.note || "")}</td></tr>`;
+      const act = (li.w || []).filter(v => v !== "" && v != null);
+      const tg = (it.sets || []).map((s, i) => tgtFor(k, it, s, i)).filter(v => v != null && v !== "");
+      const tgTxt = tg.length ? [...new Set(tg)].join("/") : "";
+      return `<tr><td>${mark}</td><td>${it.block ? `<span class="blk">${esc(it.block)}</span>` : ""}${esc(it.name)}<div class="sub">${esc(schemeText(it.sets || []))}${tgTxt ? " · target " + esc(tgTxt) : ""}</div></td><td class="r">${act.length ? `<b>${esc(act.join(", "))}</b>` : `<span class="sub">no weights</span>`}</td></tr>`;
+    })).join("");
+    return `<div class="logday"><div class="row" style="justify-content:space-between"><button class="linkbtn" style="font-size:16px" data-go-day="${d}" data-as="${k}">${esc(fmtDate(d, {weekday: "long", month: "short", day: "numeric"}))}</button>${stCell(done, tasks.length, d < todayIso()).replace("✓ Done", `✓ ${done}/${tasks.length}`)}</div>
+      <div class="sub">${esc(dayWorkouts(d).map(w => w.title || (w.kind === "cond" ? "Conditioning" : "Lift")).join(" + "))}</div>
+      ${(() => { const s = dayStat(d, k); return s.last ? `<div style="margin-top:4px;font-size:13px">Last check-off: ${timeCell(s, d)}</div>` : ""; })()}
+      <table><tbody>${rows}</tbody></table></div>`;
+  }).join("");
+}
+function vRoster() {
+  const q = S.q.toLowerCase();
+  const list = ROSTER.filter(p => !q || p.name.toLowerCase().includes(q) || String(p.no) === q || p.pos.toLowerCase().includes(q));
+  return `<div class="row" style="justify-content:space-between;align-items:center"><h1>Roster</h1>${isCoach() ? `<div class="row" style="gap:8px"><button class="btn ghost sm" id="rEdit" aria-pressed="${!!S.redit}">${S.redit ? "Done" : "Remove players"}</button><button class="btn sm" id="rAdd">Add player</button></div>` : ""}</div>${isCoach() && S.redit ? `<div class="banner" style="margin-top:12px">Tap <b>Remove</b> next to a player to take him off the roster. His maxes, weigh-ins and workout history are kept, and you can add him back from <b>Add player</b>.</div>` : ""}<p class="sub">${ROSTER.length} players · Fall 2026</p>
+    <input class="search" id="q" type="search" placeholder="Search name, number or position" value="${esc(S.q)}" style="margin-top:12px">
+    <div class="tablewrap"><table><thead><tr><th>Player</th><th>Pos</th><th>Bench</th><th>Squat</th><th>Dead</th><th>Total</th><th>Body wt</th>${isCoach() && S.redit ? "<th></th>" : ""}</tr></thead><tbody>
+    ${list.map(p => `<tr class="go" data-player="${p.key}"><td><span class="jn">${p.no}</span><span class="pname">${esc(pretty(p.name))}</span>${p.key === S.me ? ' <span class="sub">(you)</span>' : ""}</td><td>${esc(p.pos)}</td>${LIFTS.map(([l]) => `<td>${maxOf(p.key, l) || "—"}</td>`).join("")}<td><b>${total(p.key) || "—"}</b></td><td>${bw(p.key) || "—"}</td>${isCoach() && S.redit ? `<td><button class="btn ghost sm" data-rmplayer="${p.key}" style="color:var(--bad)" aria-label="Remove ${esc(pretty(p.name))} from roster">Remove</button></td>` : ""}</tr>`).join("") || `<tr><td colspan="8" class="empty">No players match.</td></tr>`}
+    </tbody></table></div>`;
+}
+
+function vPlayer() {
+  const p = player(S.player); if (!p) return `<p class="empty">Player not found. <a href="#roster">Back to roster</a></p>`;
+  subPlayerLogs();
+  const k = p.key, a = ath(k), edit = canEditPlayer(k);
+  const tabs = [["maxes", "Maxes"], ["weight", "Weigh-ins"], ["log", "Workout log"]];
+  const backTo = S.prevView === "coach" ? "Coaches dashboard" : "Roster";
+  let body = "";
+  if (S.ptab === "maxes") {
+    body = `<div class="maxes">${MAXES.map(([l, n]) => {
+      const v = maxOf(k, l), when = a.maxDates?.[l];
+      return `<div class="maxc"><div class="mh">${n}</div><div class="mb">${isCoach() ? `<input type="number" inputmode="numeric" min="0" step="5" data-max="${l}" value="${v ?? ""}" placeholder="lb" aria-label="${n} max">` : `<div class="mv">${v ?? "—"}</div>`}<div class="sub">${when ? "Updated " + esc(fmtDate(when, {month: "short", day: "numeric", year: "numeric"})) : "No max yet"}</div></div></div>`;
+    }).join("")}</div>
+    ${isCoach() ? `<p class="sub" style="margin-top:10px">Enter a 1-rep max in pounds. Every percentage on the calendar updates from these numbers. DB Bench is the weight of one dumbbell: when it's filled in, DB exercises use it straight up (70% of a 100 lb DB max is 70). When it's blank, they're figured from the bench max at ${convPct("dbbench")}%.</p>` : `<p class="sub" style="margin-top:10px">Maxes are set by the coaching staff. See a coach if one looks wrong.</p>`}
+    ${(a.maxHistory || []).length ? `<div class="section"><h3>Max history</h3><div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>Date</th><th>Lift</th><th>Max</th></tr></thead><tbody>${a.maxHistory.slice().reverse().slice(0, 30).map(h => `<tr><td>${esc(fmtDate(h.d, {month: "short", day: "numeric", year: "numeric"}))}</td><td>${esc(MAX_NAME[h.lift])}</td><td>${h.v}</td></tr>`).join("")}</tbody></table></div></div>` : ""}`;
+  } else if (S.ptab === "weight") {
+    const wi = (a.weighIns || []).slice().sort((x, y) => x.d < y.d ? -1 : 1);
+    body = `${edit ? `<div class="panel"><div class="row"><input class="inp" type="date" id="wiDate" value="${todayIso()}" aria-label="Weigh-in date"><input class="inp" type="number" inputmode="decimal" step="0.1" id="wiVal" placeholder="Body weight (lb)" aria-label="Body weight" style="flex:1 1 140px"><button class="btn" id="wiAdd">Log weigh-in</button></div></div>` : ""}
+      ${wi.length >= 2 ? `<div class="panel" style="margin-top:12px">${weightChart(wi)}</div>` : ""}
+      <div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>Date</th><th>Weight</th><th>Change</th>${edit ? "<th></th>" : ""}</tr></thead><tbody>
+      ${wi.slice().reverse().map((w, i, arr) => { const prev = arr[i + 1]; const ch = prev ? +(w.w - prev.w).toFixed(1) : null; return `<tr><td>${esc(fmtDate(w.d, {weekday: "short", month: "short", day: "numeric"}))}</td><td><b>${w.w}</b></td><td>${ch == null ? "" : (ch > 0 ? "+" : "") + ch}</td>${edit ? `<td><button class="x" data-delwi="${w.d}" aria-label="Delete weigh-in">×</button></td>` : ""}</tr>`; }).join("") || `<tr><td colspan="4" class="empty">No weigh-ins yet.</td></tr>`}
+      </tbody></table></div>`;
+  } else {
+    body = playerLogHtml(k);
+  }
+  return `<button class="back" data-back>‹ ${backTo}</button>
+    <div class="phead"><span class="bigno">${p.no}</span><div><h1>${esc(pretty(p.name))}</h1><div class="sub">${esc([p.pos, p.cl, p.ht].filter(Boolean).join(" · "))}</div></div></div>
+    <div class="statline">${LIFTS.map(([l, n]) => `<div><b>${maxOf(k, l) || "—"}</b><span>${n}</span></div>`).join("")}<div><b>${total(k) || "—"}</b><span>Total</span></div><div><b>${bw(k) || "—"}</b><span>Body wt</span></div></div>
+    ${isCoach() ? `<div class="row" style="margin-top:12px;align-items:center"><label class="sub" for="liftGrp">Lifts with</label><select class="inp" id="liftGrp" style="padding:5px 8px">${["hitters", "pitchers"].map(g => `<option value="${g}" ${groupOf(k) === g ? "selected" : ""}>${GROUP_NAME[g]}${posGroup(p.pos) === g ? " (by position)" : ""}</option>`).join("")}</select><button class="btn ghost sm" data-rmplayer="${k}">Remove from roster</button></div>` : `<p class="sub" style="margin-top:10px">Lifts with the ${GROUP_NAME[groupOf(k)].toLowerCase()}</p>`}
+    <div class="ptabs">${tabs.map(([t, l]) => `<button data-ptab="${t}" aria-pressed="${S.ptab === t}">${l}</button>`).join("")}</div>${body}`;
+}
+function weightChart(wi) {
+  const W = 600, H = 180, P = 28;
+  const xs = wi.map(w => fromIso(w.d).getTime()), ys = wi.map(w => +w.w);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys) - 2, y1 = Math.max(...ys) + 2;
+  const X = t => P + (x1 === x0 ? 0.5 : (t - x0) / (x1 - x0)) * (W - 2 * P), Y = v => H - P - (v - y0) / (y1 - y0) * (H - 2 * P);
+  const pts = wi.map((w, i) => `${X(xs[i]).toFixed(1)},${Y(ys[i]).toFixed(1)}`).join(" ");
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Body weight over time">
+    <line x1="${P}" x2="${W - P}" y1="${H - P}" y2="${H - P}" stroke="var(--line)"/>
+    <text x="${P}" y="${Y(y1) + 4}" font-size="12" fill="var(--muted)">${Math.round(y1)}</text><text x="${P}" y="${H - P - 4}" font-size="12" fill="var(--muted)">${Math.round(y0)}</text>
+    <polyline points="${pts}" fill="none" stroke="var(--red)" stroke-width="3" stroke-linejoin="round"/>
+    ${wi.map((w, i) => `<circle cx="${X(xs[i])}" cy="${Y(ys[i])}" r="4" fill="var(--navy)"/>`).join("")}
+    <text x="${P}" y="${H - 8}" font-size="12" fill="var(--muted)">${esc(fmtDate(wi[0].d, {month: "short", day: "numeric"}))}</text>
+    <text x="${W - P}" y="${H - 8}" font-size="12" fill="var(--muted)" text-anchor="end">${esc(fmtDate(wi[wi.length - 1].d, {month: "short", day: "numeric"}))}</text></svg>`;
+}
+
+function vLeaders() {
+  const cats = [["total", "Total"], ["bench", "Bench"], ["squat", "Squat"], ["deadlift", "Deadlift"], ["rel", "Relative"]];
+  const f = {total, bench: k => maxOf(k, "bench"), squat: k => maxOf(k, "squat"), deadlift: k => maxOf(k, "deadlift"), rel: k => total(k) && bw(k) ? +(total(k) / bw(k)).toFixed(2) : null}[S.lb];
+  const list = ROSTER.map(p => [p, f(p.key)]).filter(x => x[1]).sort((a, b) => b[1] - a[1]);
+  return `<h1>Leaderboards</h1><p class="sub">${S.lb === "rel" ? "Total divided by latest body weight." : "From each player's current 1-rep max."}</p>
+    <div class="seg" style="margin-top:12px">${cats.map(([c, l]) => `<button data-lb="${c}" aria-pressed="${S.lb === c}">${l}</button>`).join("")}</div>
+    <div class="tablewrap"><table><thead><tr><th>#</th><th>Player</th><th>Pos</th><th>${S.lb === "rel" ? "× BW" : "lb"}</th></tr></thead><tbody>
+    ${list.map(([p, v], i) => `<tr class="go" data-player="${p.key}"><td class="rk">${i + 1}</td><td><span class="jn">${p.no}</span><span class="pname">${esc(pretty(p.name))}</span></td><td>${esc(p.pos)}</td><td><b>${v}</b></td></tr>`).join("") || `<tr><td colspan="4" class="empty">No maxes entered yet. Players add theirs on their profile.</td></tr>`}
+    </tbody></table></div>`;
+}
+
+function vUpload() {
+  if (!isCoach()) return `<p class="empty">Uploading lifts is for the coaching staff.</p>`;
+  const u = S.upload;
+  let body = `<label class="dropzone" id="dz" for="xl"><b>Choose Excel files</b><span class="sub">Pick one or more .xlsx files. Tabs named Hitters and Pitchers go to each group by roster position. Player tabs (like "C. Bridges") bring in each player's own weights.</span><input id="xl" type="file" accept=".xlsx,.xls,.xlsm,.csv" multiple hidden></label>
+    <details class="panel" style="margin-top:12px"><summary><b>What layouts work</b></summary><div class="sub" style="margin-top:8px">
+    The import looks for a header row with an Exercise column plus any of Sets, Reps, % (or Percent/Intensity), Weight, Notes, Day and Week. One row per exercise ("4 | 5 | 75%"), one row per set, or Set 1 / Set 2 columns ("5 @ 75%") all work. Separate sheets or "Day 1" / "Monday" rows become separate days. Lists like 5,5,3 with 70,75,80 become one set each.</div></details>`;
+  if (u) {
+    body += `<div class="section"><div class="section-head"><h2>${esc(u.name)}</h2><button class="linkbtn" id="upClear">Clear</button></div>
+      ${u.players ? `<div class="banner" style="background:var(--good-soft);border-color:var(--good)">Found <b>${u.players}</b> player tabs. Each player will see his own weights from his tab.${u.unmatched.length ? ` Not on the roster, so skipped: ${esc(u.unmatched.join(", "))}.` : ""}</div>` : ""}
+      ${(u.groups || []).length ? (() => { const hs = ROSTER.filter(p => groupOf(p.key) === "hitters"), ps = ROSTER.filter(p => groupOf(p.key) === "pitchers"), two = ROSTER.filter(p => /\//.test(p.pos) && /hp\b/i.test(p.pos)); return `<div class="banner" style="background:var(--good-soft);border-color:var(--good)">Found ${u.groups.map(g => `a <b>${GROUP_NAME[g]}</b> tab`).join(" and ")}. Each player only sees his group's lift: <b>${hs.length} hitters</b> and <b>${ps.length} pitchers</b>, going by roster position.${two.length ? ` Two-way players go by the first position listed: ${two.map(p => `${esc(pretty(p.name))} (${esc(p.pos)}) → ${GROUP_NAME[groupOf(p.key)].toLowerCase()}`).join(", ")}.` : ""} To move a player, open his profile and change <b>Lifts with</b>. It updates workouts already on the calendar too.</div>`; })() : ""}
+      <div class="panel"><div class="row"><label class="sub" for="upStart">Start week of</label><input class="inp" type="date" id="upStart" value="${u.start}">${u.days.every(d => d.week != null) ? "" : `<label class="row sub"><input type="checkbox" id="upSkip" ${u.skip ? "checked" : ""}> Skip weekends</label>`}</div>
+      ${(() => { const srcs = [...new Set(u.days.filter(d => d.week != null).map(d => d.src))]; return srcs.length ? `<div style="margin-top:12px">${srcs.map(src => `<div class="row" style="margin-top:6px;justify-content:space-between"><b style="flex:1 1 200px">${esc(src)}</b><select class="inp" data-updow="${esc(src)}" aria-label="Day of the week for ${esc(src)}">${DOW.map(([n, l]) => `<option value="${n}" ${u.dow[src] === n ? "selected" : ""}>Every ${l}</option>`).join("")}</select></div>`).join("")}<p class="sub" style="margin:8px 0 0">Week 1 lands in the week you picked, Week 2 the week after, and so on. The app remembers each file's day.</p></div>` : ""; })()}</div>
+      ${u.days.map((d, di) => `<div class="pday"><div class="row"><input class="inp" data-uptitle="${di}" value="${esc(d.title || d.label)}" aria-label="Workout title" style="flex:1 1 220px;font-weight:600"><input class="inp" type="date" data-update="${di}" value="${u.dates[di]}" aria-label="Date"><label class="row sub"><input type="checkbox" data-upon="${di}" ${u.on[di] ? "checked" : ""}> Post</label></div>
+        <ul>${d.items.map((it, ii) => `<li>${it.block ? `<span class="blk">${esc(it.block)}</span>` : ""}<b>${esc(it.name)}</b>${it.grp && GROUP_NAME[it.grp] ? `<span class="gtag">${GROUP_NAME[it.grp]}</span>` : ""} <span class="sub">${it.kind === "warmup" ? esc(String(it.notes || "").split("\n").filter(Boolean).length + " movements") : (esc(schemeText(it.sets)) || "no sets")}${it.sets.some(s => s.note) ? " · " + esc(it.sets.filter(s => s.note).map(s => s.note).join(", ")) : ""}${it.pl && Object.keys(it.pl).length ? ` · <b>weights for ${Object.keys(it.pl).length} players</b>` : ""}${it.alt && Object.keys(it.alt).length ? ` · ${Object.values(it.alt).filter(a => !a.hidden).map(a => esc(a.name)).filter((v, i, arr) => arr.indexOf(v) === i).map(n => "some do " + n).join(", ")}` : ""}</span>${it.sets.some(s => s.pct != null) ? ` <select class="inp" data-upbasis="${di}:${ii}" style="padding:3px 6px;font-size:13px" aria-label="Max used for percentages"><option value="">% of …?</option>${BASES.map(([l, n]) => `<option value="${l}" ${basisOf(it) === l ? "selected" : ""}>% of ${n}</option>`).join("")}</select>${it.basis ? "" : ' <span class="warn">pick a max</span>'}` : ""}</li>`).join("")}</ul></div>`).join("")}
+      <p class="sub" style="margin-top:14px">To add another file to this batch, choose it above. It joins the list instead of replacing it.</p>
+      <div class="row" style="margin-top:8px"><button class="btn" id="upPost">Post ${u.on.filter(Boolean).length} to calendar</button><span class="sub">Also saved as a program you can reuse.</span></div></div>`;
+  }
+  const progs = Object.entries(S.programs).sort((a, b) => (b[1].uploadedAt || "").localeCompare(a[1].uploadedAt || ""));
+  if (progs.length) body += `<div class="section"><h2>Uploaded programs</h2><div class="tablewrap" style="margin-top:10px"><table><thead><tr><th>Program</th><th>Days</th><th></th></tr></thead><tbody>
+    ${progs.map(([id, p]) => `<tr><td><b>${esc(p.name)}</b><div class="sub">${p.uploadedAt ? esc(fmtDate(p.uploadedAt.slice(0, 10), {month: "short", day: "numeric", year: "numeric"})) : ""}</div></td><td>${(p.days || []).length}</td><td><button class="btn ghost sm" data-reprog="${id}">Post again</button> <button class="btn ghost sm" data-unpost="${id}">Remove from calendar</button> <button class="x" data-delprog="${id}" aria-label="Delete program">×</button></td></tr>`).join("")}</tbody></table></div></div>`;
+  return `<h1>Upload a lift</h1><p class="sub" style="margin-bottom:12px">Post the team's Excel lifts to the calendar. Weights are figured for each player from their maxes.</p>${body}`;
+}
+
+/* ---------- modals ---------- */
+function openModal(title, html, onMount) {
+  const m = $("#modal");
+  m.innerHTML = `<div class="sheet-bg" id="sbg"><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="sheet-h"><h2>${esc(title)}</h2><button id="mclose" aria-label="Close">×</button></div><div class="sheet-b">${html}</div></div></div>`;
+  $("#mclose").onclick = closeModal;
+  $("#sbg").onclick = e => { if (e.target.id === "sbg") closeModal(); };
+  onMount && onMount($(".sheet", m));
+  setTimeout(() => ($("input,select,button.pick", $(".sheet-b")) || $("#mclose")).focus(), 30);
+}
+function closeModal() { $("#modal").innerHTML = ""; if (needRender) { needRender = false; render(); } }
+/* in-app confirm: browser confirm() dialogs are blocked inside the hosted page */
+function askConfirm(msg, ok, run) {
+  openModal("Are you sure?", `<p style="margin-top:0">${esc(msg)}</p><div class="row" style="margin-top:16px"><button class="btn" id="cfOk">${esc(ok)}</button><button class="btn ghost" id="cfNo">Cancel</button></div>`, sh => {
+    $("#cfOk", sh).onclick = () => { closeModal(); run(); };
+    $("#cfNo", sh).onclick = closeModal;
+  });
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("#modal").innerHTML) closeModal(); });
+
+
+/* (staff passcode replaced by real coach logins) */
+async function sha(s) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("icc-wr:" + s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+function openSettings() {
+  const coach = isCoach(), me = S.me && player(S.me);
+  const theme = document.documentElement.dataset.theme || "auto";
+  openModal("Settings", `
+    <h3>Your account</h3><p class="sub">Signed in as <b>${esc(S.user ? S.user.email : "")}</b>${me ? ` (${esc(pretty(me.name))})` : coach ? " (coach)" : ""}.</p>
+    <div class="row"><button class="btn ghost sm" id="sOut">Sign out</button></div>
+    ${coach ? `<h3 style="margin-top:20px">Coaches</h3><p class="sub">Add player emails so they can sign in, and add coaches.</p><div class="row"><button class="btn sm" id="sLogins">Player logins</button></div>
+      <label class="f" for="sGrace">Players can check off a workout</label><select class="inp" id="sGrace">${[[0, "Only on the day it's scheduled"], [1, "That day or the next day"], [2, "Up to 2 days after"], [-1, "Anytime (no lock, late ones still flagged)"]].map(([v, l]) => `<option value="${v}" ${graceDays() === v ? "selected" : ""}>${l}</option>`).join("")}</select>
+      <p class="sub">Every check-off is timestamped. Staff can still check off for a player after the window closes, and those show as "coach."</p>
+      <label class="f" for="sRound">Round weights to the nearest</label><select class="inp" id="sRound">${[1, 2.5, 5, 10].map(v => `<option value="${v}" ${roundInc() === v ? "selected" : ""}>${v} lb</option>`).join("")}</select>
+      <label class="f" for="sDb">Dumbbell bench: per-dumbbell max as % of bench max</label><div class="row"><input class="inp" type="number" inputmode="numeric" id="sDb" min="10" max="100" step="1" value="${convPct("dbbench")}" style="max-width:110px"><span class="sub">%</span></div>
+      <p class="sub">Used for single-arm and DB bench. Example: a 230 bench at ${convPct("dbbench")}% gives a ${Math.round(230 * convPct("dbbench") / 100)} lb working max per dumbbell, and the sheet's percentages come off that.</p>` : ""}
+    <h3 style="margin-top:20px">Appearance</h3>
+    <div class="seg" style="margin-top:8px">${[["auto", "Auto"], ["light", "Light"], ["dark", "Dark"]].map(([v, l]) => `<button data-theme="${v}" aria-pressed="${theme === v}">${l}</button>`).join("")}</div>`, sh => {
+    $("#sOut", sh).onclick = signOut;
+    $("#sLogins", sh) && ($("#sLogins", sh).onclick = () => { closeModal(); openLogins(); });
+    $("#sGrace", sh) && ($("#sGrace", sh).onchange = e => { S.config = {...S.config, grace: +e.target.value}; write("config/team", S.config); render(); });
+    $("#sDb", sh) && ($("#sDb", sh).onchange = e => { const v = Math.round(+e.target.value); if (!(v >= 10 && v <= 100)) { toast("Use a number from 10 to 100."); e.target.value = convPct("dbbench"); return; } S.config = {...S.config, conv: {...(S.config.conv || {}), dbbench: v}}; write("config/team", S.config); toast(`DB bench set to ${v}% of bench`); render(); });
+    $("#sRound", sh) && ($("#sRound", sh).onchange = e => { S.config = {...S.config, round: +e.target.value}; write("config/team", S.config); render(); });
+    $$("[data-theme]", sh).forEach(b => b.onclick = () => {
+      const v = b.dataset.theme; if (v === "auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = v;
+      try { v === "auto" ? localStorage.removeItem("icc-theme") : localStorage.setItem("icc-theme", v); } catch (e) {}
+      $$("[data-theme]", sh).forEach(x => x.setAttribute("aria-pressed", x === b));
+    });
+  });
+}
+
+function editWorkout(date, wid, kind) {
+  const existing = dayWorkouts(date).find(w => w.id === wid);
+  const w = existing ? JSON.parse(JSON.stringify(existing)) : {id: uid(), kind, title: kind === "cond" ? "Conditioning" : "Lift", notes: "", items: [{id: uid(), name: "", basis: "", sets: [], notes: ""}]};
+  const cond = w.kind === "cond";
+  const exRow = it => `<div class="edex" data-id="${it.id}" data-block="${esc(it.block || "")}"><div class="row"><input class="inp nm" placeholder="${cond ? "Task, e.g. 6 x 300yd shuttle" : "Exercise, e.g. Back Squat"}" value="${esc(it.name)}" aria-label="Name">
+      ${cond ? "" : `<input class="inp sc" placeholder="3x5 @ 75%, 5 @ 80%" value="${esc(schemeText(it.sets || []))}" aria-label="Sets and reps"><select class="inp bs" aria-label="Max used for percentages"><option value="">No max</option>${BASES.map(([l, n]) => `<option value="${l}" ${basisOf(it) === l ? "selected" : ""}>% of ${n}</option>`).join("")}</select>`}
+      <select class="inp gp" aria-label="Who does this">${[["", "Everyone"], ["hitters", "Hitters only"], ["pitchers", "Pitchers only"]].map(([v, l]) => `<option value="${v}" ${(it.grp || "") === v ? "selected" : ""}>${l}</option>`).join("")}</select>
+      <button class="x" data-rm aria-label="Remove">×</button></div>
+      <textarea class="inp nt" rows="${Math.min(4, String(it.notes || "").split("\n").length)}" placeholder="Notes (optional)" style="margin-top:6px" aria-label="Notes">${esc(it.notes || "")}</textarea>${cond ? "" : `<div class="pv"></div>`}</div>`;
+  openModal(existing ? "Edit " + (cond ? "conditioning" : "lift") : "Add " + (cond ? "conditioning" : "lift"), `
+    <p class="sub" style="margin-top:0">${esc(fmtDate(date))}</p>
+    <label class="f" for="wTitle">Title</label><input class="inp" id="wTitle" value="${esc(w.title)}" style="width:100%">
+    <label class="f" for="wNotes">Notes for the team</label><textarea class="inp" id="wNotes" rows="2">${esc(w.notes || "")}</textarea>
+    <label class="f">${cond ? "Tasks" : "Exercises"}</label>${cond ? "" : `<p class="sub" style="margin:0">Write sets like <b>3x5 @ 75%</b>, <b>5 @ 70%, 5 @ 80%, 3 @ 85%</b>, <b>3x10</b> or <b>3x8 @ 135lb</b>.</p>`}
+    <div id="exs">${(w.items || []).map(exRow).join("")}</div>
+    <button class="btn ghost sm" id="addEx" style="margin-top:10px">Add ${cond ? "task" : "exercise"}</button>
+    <div class="row" style="margin-top:18px;justify-content:space-between"><button class="btn" id="wSave">Save</button>${existing ? `<button class="btn ghost" id="wDel">Delete</button>` : ""}</div>`, sh => {
+    const wire = el => {
+      $("[data-rm]", el).onclick = () => el.remove();
+      const nm = $(".nm", el), sc = $(".sc", el), bs = $(".bs", el), pv = $(".pv", el);
+      const upd = () => { if (!sc) return; const sets = parseScheme(sc.value); pv.textContent = sets.length ? `${sets.length} set${sets.length > 1 ? "s" : ""}: ` + sets.map(s => `${s.reps || "?"}${s.pct != null ? " @ " + +(s.pct * 100).toFixed(1) + "%" : s.load != null ? " @ " + s.load : ""}`).join(" · ") + (sets.some(s => s.pct != null) && !bs.value ? " — choose which max" : "") : ""; };
+      if (sc) { sc.oninput = upd; bs.onchange = upd; nm.onchange = () => { if (!bs.value) { bs.value = guessBasis(nm.value); upd(); } }; upd(); }
+    };
+    $$(".edex", sh).forEach(wire);
+    $("#addEx", sh).onclick = () => { const t = document.createElement("div"); t.innerHTML = exRow({id: uid(), name: "", basis: "", sets: [], notes: ""}); const el = t.firstElementChild; $("#exs", sh).appendChild(el); wire(el); $(".nm", el).focus(); };
+    $("#wSave", sh).onclick = () => {
+      w.title = $("#wTitle", sh).value.trim(); w.notes = $("#wNotes", sh).value.trim();
+      const orig = Object.fromEntries((w.items || []).map(it => [it.id, it]));
+      w.items = $$(".edex", sh).map(el => {
+        const o = orig[el.dataset.id], sc = $(".sc", el);
+        const sets = !sc ? [] : (o && sc.value === schemeText(o.sets || [])) ? o.sets : parseScheme(sc.value);
+        const gp = $(".gp", el) ? $(".gp", el).value : (o && o.grp) || "";
+        return {...(o ? {pl: o.pl, alt: o.alt, kind: o.kind} : {}), ...(gp ? {grp: gp} : {}), id: el.dataset.id, name: $(".nm", el).value.trim(), notes: $(".nt", el).value.trim(), block: el.dataset.block || "", basis: $(".bs", el) ? $(".bs", el).value : "", sets};
+      }).filter(it => it.name);
+      const list = dayWorkouts(date).slice(); const i = list.findIndex(x => x.id === w.id);
+      if (i >= 0) list[i] = w; else list.push(w);
+      saveDay(date, list); closeModal(); toast("Saved");
+    };
+    $("#wDel", sh) && ($("#wDel", sh).onclick = () => { askConfirm("Delete this from the calendar? Players' check-offs for it will be hidden.", "Delete", () => { saveDay(date, dayWorkouts(date).filter(x => x.id !== w.id)); toast("Deleted"); }); });
+  });
+}
+function saveDay(date, workouts) {
+  if (workouts.length) { S.days[date] = {date, workouts}; write("days/" + date, S.days[date]); }
+  else { delete S.days[date]; store.del("days/" + date).catch(() => toast("Couldn't delete. Check your connection.")); }
+  render();
+}
+function addFromProgram(date) {
+  const progs = Object.entries(S.programs);
+  openModal("Add from uploaded program", `<p class="sub" style="margin-top:0">${esc(fmtDate(date))}</p>${progs.map(([id, p]) => `<h3 style="margin-top:14px">${esc(p.name)}</h3><ul class="plist">${(p.days || []).map((d, i) => `<li><button class="pick" data-pp="${id}:${i}">${esc(d.title || d.label)} <span class="sub">${d.items.filter(x => x.kind !== "warmup").length} exercises</span></button></li>`).join("")}</ul>`).join("")}`, sh => {
+    $$("[data-pp]", sh).forEach(b => b.onclick = () => {
+      const [id, i] = b.dataset.pp.split(":"); const d = S.programs[id].days[+i];
+      saveDay(date, [...dayWorkouts(date), {id: uid(), kind: "lift", title: d.title || d.label, notes: "", items: d.items.map(it => ({...it, id: uid()}))}]);
+      closeModal(); toast("Added to " + fmtDate(date, {month: "short", day: "numeric"}));
+    });
+  });
+}
+
+/* ---------- upload handling ---------- */
+const cleanName = fn => fn.replace(/\.[^.]+$/, "").replace(/_{2}\d+_?$/, "").replace(/_+/g, " ").replace(/\s{2,}\d+\s*$/, "").replace(/\s*\(\d+\)\s*$/, "").replace(/^ICC\s+/i, "").replace(/\s+/g, " ").trim();
+async function handleFiles(files) {
+  if (typeof XLSX === "undefined") { toast("The spreadsheet reader didn't load. Check your connection and reload the page."); return; }
+  const all = [], names = [], unmatched = new Set(), groups = new Set(); let players = 0;
+  for (const f of files) {
+    try {
+      const wb = XLSX.read(await f.arrayBuffer(), {type: "array"});
+      const nm = cleanName(f.name); names.push(nm);
+      const r = parseWorkbook(wb, nm);
+      r.days.forEach(d => d.src = nm);
+      all.push(...r.days); players = Math.max(players, r.players || 0); (r.unmatched || []).forEach(x => unmatched.add(x)); (r.groups || []).forEach(x => groups.add(x));
+    } catch (e) { console.error(e); toast(`Couldn't read ${f.name}. Save it as .xlsx and try again.`); }
+  }
+  if (!all.length) { toast("No exercises found in that file."); return; }
+  const prev = S.upload;
+  if (prev) {
+    // adding more files keeps what's already in the preview; a re-picked file replaces its old copy
+    const srcs = new Set(all.map(d => d.src));
+    const keep = prev.days.map((d, i) => [d, prev.on[i]]).filter(([d]) => !srcs.has(d.src));
+    prev.days = [...keep.map(x => x[0]), ...all]; prev.on = [...keep.map(x => x[1]), ...all.map(() => true)];
+    prev.groups = [...new Set([...(prev.groups || []), ...groups])];
+    prev.players = Math.max(prev.players || 0, players); prev.unmatched = [...new Set([...(prev.unmatched || []), ...unmatched])];
+    prev.name = [...new Set(prev.days.map(d => d.src))].join(" + ");
+  } else {
+    const start = S.date >= todayIso() ? S.date : todayIso();
+    S.upload = {name: names.join(" + "), days: all, start, skip: true, on: all.map(() => true), players, unmatched: [...unmatched], groups: [...groups]};
+  }
+  const u = S.upload;
+  const order = d => [d.week ?? 0, d.src];
+  const pairs = u.days.map((d, i) => [d, u.on[i]]).sort((a, b) => (a[0].week ?? 0) - (b[0].week ?? 0) || String(a[0].src).localeCompare(String(b[0].src)));
+  u.days = pairs.map(p => p[0]); u.on = pairs.map(p => p[1]);
+  recomputeDates(u);
+  toast(`${all.length} workout${all.length === 1 ? "" : "s"} added. ${new Set(u.days.map(d => d.src)).size} file${new Set(u.days.map(d => d.src)).size === 1 ? "" : "s"} ready to post.`);
+  render();
+}
+function postUpload(force) {
+  const u = S.upload; if (!u) return;
+  const missing = u.days.some((d, i) => u.on[i] && d.items.some(it => it.sets.some(s => s.pct != null) && !it.basis));
+  if (missing && !force) { askConfirm("Some percentage exercises don't have a max picked, so players won't see target weights for them. Post anyway?", "Post anyway", () => postUpload(true)); return; }
+  const byDate = {};
+  const pid = uid();
+  u.days.forEach((d, i) => { if (!u.on[i]) return; (byDate[u.dates[i]] = byDate[u.dates[i]] || []).push({id: uid(), kind: "lift", title: d.title || d.label, notes: "", prog: pid, items: d.items.map(it => ({...it, id: uid()}))}); });
+  for (const [date, ws] of Object.entries(byDate)) { S.days[date] = {date, workouts: [...dayWorkouts(date), ...ws]}; write("days/" + date, S.days[date]); }
+  S.programs[pid] = {name: u.name, uploadedAt: new Date().toISOString(), days: u.days};
+  write("programs/" + pid, S.programs[pid]);
+  const n = Object.keys(byDate).length, first = Object.keys(byDate).sort()[0];
+  S.upload = null; toast(`Posted to ${n} day${n === 1 ? "" : "s"}`);
+  if (first) { S.date = first; S.month = first.slice(0, 7); }
+  location.hash = "calendar"; render();
+}
+function repostProgram(id) {
+  const p = S.programs[id];
+  const days = JSON.parse(JSON.stringify(p.days)); days.forEach(d => d.src = d.src || p.name);
+  S.upload = {name: p.name, days, start: todayIso(), skip: true, on: days.map(() => true)};
+  recomputeDates(S.upload);
+  render(); window.scrollTo(0, 0);
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", e => {
+  const t = e.target.closest("button,tr,a"); if (!t || !$("#app").contains(t) && !t.closest("#app")) return;
+  const d = t.dataset;
+  if (d.goDay) { S.date = d.goDay; S.month = d.goDay.slice(0, 7); S.teamView = d.team === "1"; if (d.as) S.viewAs = d.as; else if (!isCoach()) S.viewAs = null; subDayLogs(); if (location.hash !== "#day") location.hash = "day"; else render(); return; }
+  if (d.player) { S.player = d.player; S.ptab = d.ptabgo || "maxes"; location.hash = "player"; return; }
+  if (d.cshift) { const n = +d.cshift; S.date = n ? addDays(S.date, n) : todayIso(); subDayLogs(); render(); return; }
+  if (d.cmonth) { const n = +d.cmonth; if (!n) S.cmonth = todayIso().slice(0, 7); else { const [y, m] = (S.cmonth || todayIso().slice(0, 7)).split("-").map(Number); S.cmonth = iso(new Date(y, m - 1 + n, 1)).slice(0, 7); } render(); return; }
+  if (d.cfilter) { S.cfilter = d.cfilter; render(); return; }
+  if (d.csort) { S.csort = d.csort; render(); return; }
+  if (d.viewas) { S.viewAs = d.viewas; S.teamView = false; render(); return; }
+  if (d.month) { const n = +d.month; if (!n) S.month = todayIso().slice(0, 7); else { const [y, m] = S.month.split("-").map(Number); const x = new Date(y, m - 1 + n, 1); S.month = iso(x).slice(0, 7); } render(); return; }
+  if (d.shift) { S.date = addDays(S.date, +d.shift); S.month = S.date.slice(0, 7); subDayLogs(); render(); return; }
+  if (d.team) { S.teamView = d.team === "1"; render(); return; }
+  if (d.add) { if (d.add === "program") addFromProgram(S.date); else editWorkout(S.date, null, d.add); return; }
+  if (d.editw) { editWorkout(S.date, d.editw); return; }
+  if (d.done) {
+    const who = S.viewAs || S.me; if (!who || !canEditPlayer(who)) return;
+    if (lockReason(S.date)) { toast(lockReason(S.date)); return; }
+    saveLog(S.date, who, lg => { const it = lg.items[d.done] = lg.items[d.done] || {}; it.done = !it.done; it.at = new Date().toISOString(); if (isCoach() && who !== S.me) it.by = "coach"; else delete it.by; });
+    render(); return;
+  }
+  if (d.fill) {
+    const who = S.viewAs || S.me; const [wid, iid] = d.fill.split(":"); const it0 = dayWorkouts(S.date).find(w => w.id === wid)?.items.find(x => x.id === iid); if (!it0) return;
+    const it = resolveItem(it0, who);
+    saveLog(S.date, who, lg => { const li = lg.items[d.fill] = lg.items[d.fill] || {}; li.w = li.w || []; it.sets.forEach((s, i) => { const tg = tgtFor(who, it, s, i); if ((li.w[i] ?? "") === "" && typeof tg === "number") li.w[i] = tg; }); for (let i = 0; i < li.w.length; i++) if (li.w[i] == null) li.w[i] = ""; });
+    render(); return;
+  }
+  if (d.addmax) { S.player = S.viewAs || S.me; S.ptab = "maxes"; location.hash = "player"; setTimeout(() => $(`[data-max="${d.addmax}"]`)?.focus(), 60); return; }
+  if (d.ptab) { S.ptab = d.ptab; render(); return; }
+  if (d.lb) { S.lb = d.lb; render(); return; }
+  if ("back" in d) { history.length > 1 ? history.back() : (location.hash = "roster"); return; }
+  if (d.delwi) {
+    const k = S.player; const a = {...(S.athletes[k] || {})}; a.weighIns = (a.weighIns || []).filter(w => w.d !== d.delwi); S.athletes[k] = a; write("athletes/" + k, a); render(); return;
+  }
+  if (d.reprog) { repostProgram(d.reprog); return; }
+  if (d.unpost) {
+    const p = S.programs[d.unpost]; if (!p) return;
+    const sigs = new Set((p.days || []).map(x => x.items.map(i => i.name).join("|")));
+    const hit = w => w.prog === d.unpost || (!w.prog && w.kind === "lift" && sigs.has((w.items || []).map(i => i.name).join("|")));
+    const dates = Object.keys(S.days).filter(dt => dayWorkouts(dt).some(hit));
+    if (!dates.length) { toast("Nothing from this program is on the calendar."); return; }
+    askConfirm(`Remove this program's lifts from ${dates.length} day${dates.length === 1 ? "" : "s"}? Conditioning and other lifts stay.`, "Remove from calendar", () => {
+      dates.forEach(dt => saveDay(dt, dayWorkouts(dt).filter(w => !hit(w))));
+      toast(`Removed from ${dates.length} day${dates.length === 1 ? "" : "s"}`);
+    }); return;
+  }
+  if (d.delprog) { const id = d.delprog; askConfirm("Delete this saved program? Days already on the calendar stay.", "Delete program", () => { delete S.programs[id]; store.del("programs/" + id).catch(() => toast("Couldn't delete.")); render(); }); return; }
+  if (t.id === "rAdd") { if (isCoach()) addPlayerModal(); return; }
+  if (t.id === "rEdit") { S.redit = !S.redit; render(); return; }
+  if (d.rmplayer) { if (isCoach()) removePlayer(d.rmplayer); return; }
+  if (t.id === "wiAdd") {
+    const k = S.player, dd = $("#wiDate").value, v = parseFloat($("#wiVal").value);
+    if (!dd || !(v > 50 && v < 500)) { toast("Enter a body weight in pounds."); return; }
+    const a = {...(S.athletes[k] || {})}; a.weighIns = [...(a.weighIns || []).filter(w => w.d !== dd), {d: dd, w: v}].sort((x, y) => x.d < y.d ? -1 : 1).slice(-400);
+    S.athletes[k] = a; write("athletes/" + k, a); toast("Weigh-in logged"); render(); return;
+  }
+  if (t.id === "upClear") { S.upload = null; render(); return; }
+  if (t.id === "upPost") { postUpload(); return; }
+});
+document.addEventListener("change", e => {
+  const el = e.target; if (!$("#app").contains(el)) return; const d = el.dataset;
+  if (d.act) {
+    const who = S.viewAs || S.me; if (!who || !canEditPlayer(who)) return;
+    if (lockReason(S.date)) { toast(lockReason(S.date)); needRender = true; return; }
+    const v = el.value === "" ? "" : Number(el.value);
+    saveLog(S.date, who, lg => { const li = lg.items[d.act] = lg.items[d.act] || {}; li.w = li.w || []; li.w[+d.i] = v; for (let i = 0; i < li.w.length; i++) if (li.w[i] == null) li.w[i] = ""; li.wAt = new Date().toISOString(); });
+    return;
+  }
+  if (d.result) { const who = S.viewAs || S.me; if (!who || !canEditPlayer(who)) return; if (lockReason(S.date)) { toast(lockReason(S.date)); needRender = true; return; } saveLog(S.date, who, lg => { const li = lg.items[d.result] = lg.items[d.result] || {}; li.note = el.value.trim(); }); return; }
+  if (d.max) {
+    if (!isCoach()) { toast("Only coaches can change maxes."); render(); return; }
+    const k = S.player, v = el.value === "" ? null : Math.round(Number(el.value));
+    if (v != null && !(v > 0 && v < 1500)) { toast("Enter a max in pounds."); return; }
+    const a = JSON.parse(JSON.stringify(S.maxDocs[k] || {})); a.maxes = a.maxes || {}; a.maxDates = a.maxDates || {};
+    if (a.maxes[d.max] === v) return;
+    a.maxes[d.max] = v; a.maxDates[d.max] = todayIso();
+    if (v) a.maxHistory = [...(a.maxHistory || []), {lift: d.max, v, d: todayIso()}].slice(-200);
+    S.maxDocs[k] = a; write("maxes/" + k, a); toast(`${MAX_NAME[d.max]} max saved`); needRender = true; return;
+  }
+  if (el.id === "liftGrp") {
+    if (!isCoach()) return;
+    const k = S.player, p = player(k); if (!p) return;
+    const a = JSON.parse(JSON.stringify(S.maxDocs[k] || {}));
+    if (el.value === posGroup(p.pos)) delete a.liftGroup; else a.liftGroup = el.value;
+    S.maxDocs[k] = a; write("maxes/" + k, a); toast(`${pretty(p.name)} now lifts with the ${GROUP_NAME[el.value].toLowerCase()}`); render(); return;
+  }
+  if (el.id === "viewAs") { S.viewAs = el.value || null; needRender = false; render(); return; }
+  const u = S.upload;
+  if (u) {
+    if (el.id === "upStart" || el.id === "upSkip" || d.updow != null) {
+      u.start = $("#upStart").value || todayIso(); u.skip = $("#upSkip") ? $("#upSkip").checked : u.skip;
+      if (d.updow != null) { u.dow[d.updow] = +el.value; const m = savedDow(); m[d.updow] = +el.value; try { localStorage.setItem("icc-wr-dow", JSON.stringify(m)); } catch (e) {} }
+      recomputeDates(u); needRender = false; render(); return;
+    }
+    if (d.update) { u.dates[+d.update] = el.value; return; }
+    if (d.upon) { u.on[+d.upon] = el.checked; needRender = false; render(); return; }
+    if (d.uptitle) { u.days[+d.uptitle].title = el.value.trim() || u.days[+d.uptitle].title; return; }
+    if (d.upbasis) { const [di, ii] = d.upbasis.split(":").map(Number); u.days[di].items[ii].basis = el.value; needRender = false; render(); return; }
+  }
+  if (el.id === "xl" && el.files.length) { handleFiles([...el.files]); el.value = ""; }
+});
+document.addEventListener("input", e => { if (e.target.id === "q") { S.q = e.target.value; const pos = e.target.selectionStart; render(); const q = $("#q"); q.focus(); q.setSelectionRange(pos, pos); } });
+document.addEventListener("dragover", e => { const dz = e.target.closest?.("#dz"); if (dz) { e.preventDefault(); dz.classList.add("over"); } });
+document.addEventListener("dragleave", e => { const dz = e.target.closest?.("#dz"); if (dz) dz.classList.remove("over"); });
+document.addEventListener("drop", e => { const dz = e.target.closest?.("#dz"); if (dz) { e.preventDefault(); dz.classList.remove("over"); if (e.dataTransfer.files.length) handleFiles([...e.dataTransfer.files]); } });
+$("#setBtn").onclick = openSettings;
+$("#meBtn").onclick = () => { if (S.me) { S.player = S.me; S.ptab = "maxes"; location.hash = "player"; render(); } else openSettings(); };
+
+function route() {
+  const h = location.hash.slice(1);
+  if (h === "player" && S.view !== "player") S.prevView = S.view;
+  S.view = ["home", "calendar", "day", "roster", "player", "leaders", "upload", "coach"].includes(h) ? h : "home";
+  if (S.view === "player" && !S.player) S.view = S.me ? (S.player = S.me, "player") : "roster";
+  render(); if (h) window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", () => { route(); window.scrollTo(0, 0); });
+
+/* ---------- sign-in ---------- */
+function authCard(inner) {
+  return `<div style="max-width:420px;margin:24px auto 0"><div class="hero"><img src="${LOGO}" alt="" style="width:64px;height:68px;object-fit:contain"><h1 style="margin-top:8px">ICC Weight Room</h1>${inner}</div></div>`;
+}
+function renderAuth() {
+  $("#tabs").innerHTML = ""; $(".hbtns").hidden = true;
+  const v = S.authView || "in", msg = S.authMsg ? `<div class="banner" style="margin-top:12px">${esc(S.authMsg)}</div>` : "";
+  const email = `<label class="f" for="aEmail">Email</label><input class="inp" style="width:100%" id="aEmail" type="email" autocomplete="email" inputmode="email" value="${esc(S.authEmail || "")}" required>`;
+  const pw = (id, lbl, ac) => `<label class="f" for="${id}">${lbl}</label><input class="inp" style="width:100%" id="${id}" type="password" autocomplete="${ac}" minlength="6" required>`;
+  let body;
+  if (v === "in") body = `<p class="sub">Sign in with the email your coach put on the roster.</p><form id="aForm">${email}${pw("aPass", "Password", "current-password")}
+      <div class="row" style="margin-top:16px"><button class="btn" type="submit">Sign in</button></div></form>
+      <div class="row" style="margin-top:14px;gap:16px"><button class="linkbtn" data-auth="up">First time? Create your account</button><button class="linkbtn" data-auth="forgot">Forgot password</button></div>`;
+  else if (v === "up") body = `<p class="sub">Use the same email your coach has on the roster. That's how the app knows who you are.</p><form id="aForm">${email}${pw("aPass", "Make a password (6+ characters)", "new-password")}
+      <div class="row" style="margin-top:16px"><button class="btn" type="submit">Create account</button></div></form>
+      <div class="row" style="margin-top:14px"><button class="linkbtn" data-auth="in">Already have an account? Sign in</button></div>`;
+  else if (v === "forgot") body = `<p class="sub">We'll email you a link to set a new password.</p><form id="aForm">${email}
+      <div class="row" style="margin-top:16px"><button class="btn" type="submit">Send link</button></div></form>
+      <div class="row" style="margin-top:14px"><button class="linkbtn" data-auth="in">Back to sign in</button></div>`;
+  else body = `<p class="sub">Choose a new password.</p><form id="aForm">${pw("aPass", "New password (6+ characters)", "new-password")}
+      <div class="row" style="margin-top:16px"><button class="btn" type="submit">Save password</button></div></form>`;
+  $("#app").innerHTML = authCard(body + msg);
+  $$("[data-auth]").forEach(b => b.onclick = () => { S.authEmail = ($("#aEmail") || {}).value || S.authEmail; S.authView = b.dataset.auth; S.authMsg = ""; renderAuth(); });
+  $("#aForm").onsubmit = async e => {
+    e.preventDefault();
+    const btn = $("#aForm button[type=submit]"); btn.disabled = true;
+    const em = ($("#aEmail") || {}).value?.trim(), pass = ($("#aPass") || {}).value;
+    S.authEmail = em || S.authEmail; S.authMsg = "";
+    try {
+      if (v === "in") { const {error} = await sb.auth.signInWithPassword({email: em, password: pass}); if (error) throw error; return; }
+      if (v === "up") {
+        const {data, error} = await sb.auth.signUp({email: em, password: pass, options: {emailRedirectTo: location.origin + location.pathname}});
+        if (error) throw error;
+        if (!data.session) { S.authView = "in"; S.authMsg = "Check your email and tap the link to finish creating your account. Then sign in here."; }
+        else return;
+      } else if (v === "forgot") {
+        const {error} = await sb.auth.resetPasswordForEmail(em, {redirectTo: location.origin + location.pathname});
+        if (error) throw error;
+        S.authView = "in"; S.authMsg = "If that email has an account, a reset link is on its way.";
+      } else {
+        const {error} = await sb.auth.updateUser({password: pass}); if (error) throw error;
+        S.authView = "in"; S.authMsg = ""; toast("Password saved");
+        const {data: {session}} = await sb.auth.getSession(); if (session) { startSession(session); return; }
+      }
+    } catch (err) {
+      const m = String(err && err.message || err);
+      S.authMsg = /invalid login/i.test(m) ? "That email and password don't match. Try again or reset your password."
+        : /not confirmed/i.test(m) ? "Your email isn't confirmed yet. Tap the link in the email we sent you."
+        : /already registered/i.test(m) ? "That email already has an account. Sign in instead." : m;
+    }
+    renderAuth();
+  };
+}
+function vNoAccess() {
+  return authCard(`<p>You're signed in as <b>${esc(S.user && S.user.email)}</b>, but that email isn't on the team roster yet.</p>
+    <p class="sub">Ask a coach to add this email to your name in the app (Settings › Player logins). Then tap Try again.</p>
+    <div class="row" style="margin-top:14px"><button class="btn" id="naRetry">Try again</button><button class="btn ghost" id="naOut">Sign out</button></div>`);
+}
+async function signOut() { try { await sb.auth.signOut(); } catch (e) {} location.hash = ""; location.reload(); }
+
+/* ---------- player logins (coaches) ---------- */
+const ROLE_NAME = {hitter: "Hitter", pitcher: "Pitcher", two_way: "Two-way"};
+function roleOf(pos) {
+  const parts = String(pos || "").split("/").map(s => s.trim()).filter(Boolean);
+  const isP = s => /^(r|l)?hp$|^p$/i.test(s);
+  const p = parts.some(isP), h = parts.some(s => !isP(s));
+  return p && h ? "two_way" : p ? "pitcher" : "hitter";
+}
+async function syncPlayers(prev, next) {
+  if (!isCoach()) return;
+  try {
+    const ops = [];
+    const setActive = (k, on) => ops.push(sb.from("players").update({active: on}).eq("app_key", k));
+    next.removed.filter(k => !prev.removed.includes(k)).forEach(k => setActive(k, false));
+    prev.removed.filter(k => !next.removed.includes(k)).forEach(k => setActive(k, true));
+    const pa = prev.added.map(p => p.key), na = next.added.map(p => p.key);
+    next.added.filter(p => !pa.includes(p.key)).forEach(p => {
+      const [l, f] = String(p.name).split(", ");
+      ops.push(sb.from("players").upsert({app_key: p.key, first_name: f || p.name, last_name: l || "", jersey: String(p.no), position: roleOf(p.pos), class_year: p.cl || null, active: true}, {onConflict: "app_key"}));
+    });
+    prev.added.filter(p => !na.includes(p.key)).forEach(p => setActive(p.key, false));
+    const res = await Promise.all(ops);
+    const bad = res.find(r => r.error); if (bad) throw bad.error;
+  } catch (e) { console.error(e); toast("Roster saved, but player logins didn't update. Check Settings › Player logins."); }
+}
+async function openLogins() {
+  openModal("Player logins", `<p class="sub">Loading…</p>`);
+  const [pl, co] = await Promise.all([
+    sb.from("players").select("id,app_key,first_name,last_name,jersey,position,email,user_id,active").order("last_name"),
+    sb.from("coaches").select("id,name,email,user_id").order("name")]);
+  if (pl.error || co.error) { $(".sheet-b").innerHTML = `<p class="warn">Couldn't load logins. ${esc((pl.error || co.error).message)}</p>`; return; }
+  const players = pl.data.filter(p => p.active).sort((a, b) => (+a.jersey || 0) - (+b.jersey || 0));
+  const status = r => r.user_id ? `<span class="st ok">Signed up</span>` : r.email ? `<span class="st part">Waiting on signup</span>` : `<span class="st none">No email</span>`;
+  $(".sheet-b").innerHTML = `<p class="sub">Put each player's email next to his name, then tell him to open the app and tap <b>Create your account</b> with that email. He'll be linked to his name automatically.</p>
+    <input class="search" id="lq" type="search" placeholder="Search players">
+    <ul class="plist" id="ll">${players.map(p => `<li data-n="${esc((p.first_name + " " + p.last_name).toLowerCase())}" style="flex-wrap:wrap"><span class="jn">${esc(p.jersey || "")}</span><span style="flex:1 1 140px"><b>${esc(p.first_name)} ${esc(p.last_name)}</b> <span class="sub">${ROLE_NAME[p.position] || ""}</span><br>${status(p)}</span>
+      <input class="inp" type="email" inputmode="email" autocomplete="off" placeholder="player@email.com" data-pemail="${p.id}" value="${esc(p.email || "")}" style="flex:2 1 200px"></li>`).join("")}</ul>
+    <h3 style="margin-top:22px">Coaches</h3><p class="sub">Coaches can post lifts, change maxes and see every player.</p>
+    <ul class="plist">${co.data.map(c => `<li><span style="flex:1"><b>${esc(c.name)}</b> <span class="sub">${esc(c.email)}</span><br>${status(c)}</span></li>`).join("")}</ul>
+    <div class="row" style="margin-top:10px"><input class="inp" id="cName" placeholder="Coach name" style="flex:1 1 140px"><input class="inp" id="cEmail" type="email" placeholder="coach@email.com" style="flex:2 1 180px"><button class="btn sm" id="cAdd">Add coach</button></div>`;
+  const sh = $(".sheet");
+  $("#lq", sh).oninput = e => { const q = e.target.value.toLowerCase(); $$("#ll li", sh).forEach(li => li.hidden = !li.dataset.n.includes(q)); };
+  $$("[data-pemail]", sh).forEach(inp => inp.onchange = async () => {
+    const v = inp.value.trim().toLowerCase() || null;
+    if (v && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { toast("That doesn't look like an email."); return; }
+    const {error} = await sb.from("players").update({email: v}).eq("id", inp.dataset.pemail);
+    if (error) toast(error.code === "23505" ? "That email is already on another player." : "Couldn't save. " + error.message);
+    else toast(v ? "Email saved" : "Email removed");
+  });
+  $("#cAdd", sh).onclick = async () => {
+    const n = $("#cName", sh).value.trim(), em = $("#cEmail", sh).value.trim().toLowerCase();
+    if (!n || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { toast("Enter a name and email."); return; }
+    const {error} = await sb.from("coaches").insert({name: n, email: em});
+    if (error) { toast(error.code === "23505" ? "That coach is already added." : "Couldn't add. " + error.message); return; }
+    toast(`${n} added as a coach`); openLogins();
+  };
+}
+
+/* ---------- boot ---------- */
+let sessionStarted = false;
+async function startSession(session) {
+  if (sessionStarted) return; sessionStarted = true;
+  S.user = session.user; S.authView = null; S.authMsg = "";
+  const [k, c] = await Promise.all([sb.rpc("my_player_key"), sb.rpc("is_coach")]);
+  if (k.error || c.error) console.error(k.error || c.error);
+  S.me = k.data || null; S.coach = c.data === true; S.authed = true; S.dbChecked = true; S.mode = "db";
+  $(".hbtns").hidden = false;
+  if (!S.me && !S.coach) { render(); return; }
+  store.start(); startSubs();
+  route(); if (S.view === "player") subPlayerLogs();
+}
+(async function init() {
+  $$("[data-logo]").forEach(i => i.src = LOGO);
+  if (RECOVERY) S.authView = "reset";
+  sb.auth.onAuthStateChange((ev, session) => setTimeout(() => {
+    if (ev === "PASSWORD_RECOVERY") { S.authView = "reset"; S.authed = false; renderAuth(); return; }
+    if (ev === "SIGNED_OUT") { if (S.authed) location.reload(); return; }
+    if (session && !sessionStarted && S.authView !== "reset") startSession(session);
+  }, 0));
+  const {data: {session}} = await sb.auth.getSession();
+  S.authReady = true;
+  if (session && S.authView !== "reset") startSession(session); else render();
+})();
+</script>
+</body>
+</html>
